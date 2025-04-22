@@ -1,6 +1,5 @@
 package view;
 
-import view.FiturLogin;
 import Config.Koneksi;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;

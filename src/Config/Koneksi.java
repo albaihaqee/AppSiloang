@@ -1,10 +1,7 @@
 package Config;
 
-import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Koneksi {
     private static Connection conn;

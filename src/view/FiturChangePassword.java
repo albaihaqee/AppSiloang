@@ -1,9 +1,7 @@
 package view;
 
 import Config.Koneksi;
-import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,9 +19,6 @@ public class FiturChangePassword extends javax.swing.JFrame {
         conn = Koneksi.getConnection();
         lb_hidePass.setVisible(false);
         lb_hidePass1.setVisible(false);
-        //tf_email.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Masukkan email");
-        //tf_passLama.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Masukkan password lama");
-        //tf_passBaru.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Buat password baru");
     }
 
     @SuppressWarnings("unchecked")

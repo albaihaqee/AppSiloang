@@ -5,17 +5,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import javax.swing.*;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class FiturSupplier extends javax.swing.JPanel {
 
@@ -27,15 +26,11 @@ public class FiturSupplier extends javax.swing.JPanel {
 
         conn = Koneksi.getConnection();
         this.userID = userID;
+        setupCustomTableStyle();
         setTabelModel();
         loadData();
+        setPlaceholderField();
         setButtonIcons();
-
-        txt_idSupplier.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "ID Supplier");
-        txt_namaSupplier.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nama");
-        txt_alamatSupplier.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Alamat");
-        txt_teleponSupplier.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "08xxxxxxxxxx");
-        txt_search.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Pencarian");
         
         FlatSVGIcon dashboardIcon = new FlatSVGIcon("icons/supplier.svg").derive(15, 15);
         dashboardIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> new Color(17, 97, 171)));
@@ -444,6 +439,61 @@ public class FiturSupplier extends javax.swing.JPanel {
         txt_alamatSupplier.setText("");
         txt_teleponSupplier.setText("");
     }
+    
+    private void setupCustomTableStyle() {
+        try {
+            Color headerColor = new Color(17, 97, 171);
+            Color selectionColor = new Color(200, 200, 200);
+
+            UIManager.put("TableHeader.background", headerColor);
+            UIManager.put("TableHeader.foreground", Color.WHITE);
+            UIManager.put("Table.selectionBackground", selectionColor);
+            UIManager.put("Table.selectionForeground", Color.BLACK); // Text hitam untuk kontras dengan background abu-abu
+            UIManager.put("Table.alternateRowColor", new Color(240, 240, 240));
+
+            if (tbl_data != null) {
+                tbl_data.getTableHeader().setBackground(headerColor);
+                tbl_data.getTableHeader().setForeground(Color.WHITE);
+                tbl_data.setFocusable(false);
+                tbl_data.setRowSelectionAllowed(true);
+                tbl_data.setColumnSelectionAllowed(false);
+                tbl_data.setRowHeight(30);
+                tbl_data.setShowGrid(false);
+                tbl_data.setShowHorizontalLines(false);
+                tbl_data.setShowVerticalLines(false);
+                tbl_data.setIntercellSpacing(new Dimension(0, 0));
+
+                tbl_data.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+                    @Override
+                    public Component getTableCellRendererComponent(JTable table, Object value, 
+                            boolean isSelected, boolean hasFocus, int row, int column) {
+                        Component comp = super.getTableCellRendererComponent(table, value, 
+                                isSelected, false, row, column);
+
+                        if (isSelected) {
+                            comp.setBackground(selectionColor);
+                            comp.setForeground(Color.BLACK); // Text hitam untuk kontras
+                        } else {
+                            if (row % 2 == 0) {
+                                comp.setBackground(Color.WHITE);
+                            } else {
+                                comp.setBackground(new Color(240, 240, 240));
+                            }
+                            comp.setForeground(Color.BLACK);
+                        }
+
+                        ((JComponent) comp).setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
+                        return comp;
+                    }
+                });
+
+                tbl_data.repaint();
+            }
+        } catch (Exception e) {
+            System.err.println("Error saat mengatur custom style tabel: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     private void setTabelModel() {
         DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
@@ -451,6 +501,14 @@ public class FiturSupplier extends javax.swing.JPanel {
         model.addColumn("Nama Supplier");
         model.addColumn("Alamat");
         model.addColumn("Telepon");
+    }
+    
+    private void setPlaceholderField() {
+        txt_idSupplier.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "ID Supplier");
+        txt_namaSupplier.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nama");
+        txt_alamatSupplier.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Alamat");
+        txt_teleponSupplier.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "08xxxxxxxxxx");
+        txt_search.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Pencarian");
     }
 
     private void getData(DefaultTableModel model) {

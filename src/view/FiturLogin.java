@@ -3,10 +3,7 @@ package view;
 import Config.Koneksi;
 import aplikasidesktopsiloang.MenuUtama;
 import aplikasidesktopsiloang.MenuUtamaKasir;
-import view.FiturChangePassword;
-import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
@@ -17,13 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.DriverManager;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
-import javax.swing.SwingWorker;
 
 public class FiturLogin extends javax.swing.JFrame {
 
@@ -35,8 +26,8 @@ public class FiturLogin extends javax.swing.JFrame {
         conn = Koneksi.getConnection();
         setActionButton();
         setBlueSidebarIcons();
-        lb_hidePassword.setVisible(false);
         
+        lb_hidePassword.setVisible(false);
         logo.setIcon(new FlatSVGIcon("icons/siloang.svg", logo.getWidth(), logo.getHeight())); 
         
         tf_username.addKeyListener(new KeyAdapter() {
@@ -231,9 +222,6 @@ public class FiturLogin extends javax.swing.JFrame {
         forgotPassword.setVisible(true);
     }//GEN-LAST:event_lb_forgotPasswordMouseClicked
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         FlatLightLaf.setup();
         //FlatDarkLaf.setup();
@@ -285,9 +273,8 @@ public class FiturLogin extends javax.swing.JFrame {
             }
         });
 
-        bt_login.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
+        bt_login.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 prosesLogin();
             }
         });

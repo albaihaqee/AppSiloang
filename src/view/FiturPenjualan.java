@@ -8,22 +8,17 @@ import java.sql.*;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.util.function.Supplier;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import java.text.SimpleDateFormat;
 import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -32,6 +27,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class FiturPenjualan extends javax.swing.JPanel {
     
@@ -43,29 +39,15 @@ public class FiturPenjualan extends javax.swing.JPanel {
         
         conn = Koneksi.getConnection();
         this.userID = userID;
+        setupCustomTableStyle();
         setTabelModel();
         setTabelModelDetail();
         setTabelModelSementara();
         loadData();
         loadDataSementara();
         actionButton();
+        setPlaceholderField();
         setButtonIcons();
-        
-        txt_idPelanggan.setText("ID");
-        txt_namaPelanggan.setText("Nama");
-        txt_alamatPelanggan.setText("Alamat");
-        txt_teleponPelanggan.setText("Telepon");
-        txt_idProduk.setText("ID");
-        txt_namaProduk.setText("Produk");
-        txt_satuanProduk.setText("Satuan");
-        txt_bayar.setText("Rp.0");
-        txt_kembalian.setText("Rp.0");
-        
-        txt_hargaProduk.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Rp.0");
-        txt_jumlah.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "0");
-        txt_subtotal.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Rp.0");
-        txt_totalHarga.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Rp.0");
-        txt_search.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Pencarian");
         
         FlatSVGIcon dashboardIcon = new FlatSVGIcon("icons/penjualan.svg").derive(15, 15);
         dashboardIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> new Color(17, 97, 171)));
@@ -1050,6 +1032,131 @@ public class FiturPenjualan extends javax.swing.JPanel {
             }
         });
     }     
+    
+    private void setupCustomTableStyle() {
+        try {
+            Color headerColor = new Color(17, 97, 171);
+            Color selectionColor = new Color(200, 200, 200);
+            
+            UIManager.put("TableHeader.background", headerColor);
+            UIManager.put("TableHeader.foreground", Color.WHITE);
+            UIManager.put("Table.selectionBackground", selectionColor);
+            UIManager.put("Table.selectionForeground", Color.BLACK);
+            UIManager.put("Table.alternateRowColor", new Color(240, 240, 240));
+
+            // Untuk tbl_data
+            if (tbl_data != null) {
+                tbl_data.getTableHeader().setBackground(headerColor);
+                tbl_data.getTableHeader().setForeground(Color.WHITE);
+                tbl_data.setFocusable(false);
+                tbl_data.setRowSelectionAllowed(true);
+                tbl_data.setColumnSelectionAllowed(false);
+                tbl_data.setRowHeight(30);
+                tbl_data.setShowGrid(false);
+                tbl_data.setShowHorizontalLines(false);
+                tbl_data.setShowVerticalLines(false);
+                tbl_data.setIntercellSpacing(new Dimension(0, 0));
+                tbl_data.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+                    @Override
+                    public Component getTableCellRendererComponent(JTable table, Object value, 
+                            boolean isSelected, boolean hasFocus, int row, int column) {
+                        Component comp = super.getTableCellRendererComponent(table, value, 
+                                isSelected, false, row, column);
+                        if (isSelected) {
+                            comp.setBackground(selectionColor);
+                            comp.setForeground(Color.BLACK); 
+                        } else {
+                            if (row % 2 == 0) {
+                                comp.setBackground(Color.WHITE);
+                            } else {
+                                comp.setBackground(new Color(240, 240, 240));
+                            }
+                            comp.setForeground(Color.BLACK);
+                        }
+                        ((JComponent) comp).setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
+                        return comp;
+                    }
+                });
+                tbl_data.repaint();
+            }
+
+            // Untuk tbl_dataDetail
+            if (tbl_dataDetail != null) {
+                tbl_dataDetail.getTableHeader().setBackground(headerColor);
+                tbl_dataDetail.getTableHeader().setForeground(Color.WHITE);
+                tbl_dataDetail.setFocusable(false);
+                tbl_dataDetail.setRowSelectionAllowed(true);
+                tbl_dataDetail.setColumnSelectionAllowed(false);
+                tbl_dataDetail.setRowHeight(30);
+                tbl_dataDetail.setShowGrid(false);
+                tbl_dataDetail.setShowHorizontalLines(false);
+                tbl_dataDetail.setShowVerticalLines(false);
+                tbl_dataDetail.setIntercellSpacing(new Dimension(0, 0));
+                tbl_dataDetail.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+                    @Override
+                    public Component getTableCellRendererComponent(JTable table, Object value, 
+                            boolean isSelected, boolean hasFocus, int row, int column) {
+                        Component comp = super.getTableCellRendererComponent(table, value, 
+                                isSelected, false, row, column);
+                        if (isSelected) {
+                            comp.setBackground(selectionColor);
+                            comp.setForeground(Color.BLACK); 
+                        } else {
+                            if (row % 2 == 0) {
+                                comp.setBackground(Color.WHITE);
+                            } else {
+                                comp.setBackground(new Color(240, 240, 240));
+                            }
+                            comp.setForeground(Color.BLACK);
+                        }
+                        ((JComponent) comp).setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
+                        return comp;
+                    }
+                });
+                tbl_dataDetail.repaint();
+            }
+
+            // Untuk tbl_dataSementara
+            if (tbl_dataSementara != null) {
+                tbl_dataSementara.getTableHeader().setBackground(headerColor);
+                tbl_dataSementara.getTableHeader().setForeground(Color.WHITE);
+                tbl_dataSementara.setFocusable(false);
+                tbl_dataSementara.setRowSelectionAllowed(true);
+                tbl_dataSementara.setColumnSelectionAllowed(false);
+                tbl_dataSementara.setRowHeight(30);
+                tbl_dataSementara.setShowGrid(false);
+                tbl_dataSementara.setShowHorizontalLines(false);
+                tbl_dataSementara.setShowVerticalLines(false);
+                tbl_dataSementara.setIntercellSpacing(new Dimension(0, 0));
+                tbl_dataSementara.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+                    @Override
+                    public Component getTableCellRendererComponent(JTable table, Object value, 
+                            boolean isSelected, boolean hasFocus, int row, int column) {
+                        Component comp = super.getTableCellRendererComponent(table, value, 
+                                isSelected, false, row, column);
+                        if (isSelected) {
+                            comp.setBackground(selectionColor);
+                            comp.setForeground(Color.BLACK); 
+                        } else {
+                            if (row % 2 == 0) {
+                                comp.setBackground(Color.WHITE);
+                            } else {
+                                comp.setBackground(new Color(240, 240, 240));
+                            }
+                            comp.setForeground(Color.BLACK);
+                        }
+                        ((JComponent) comp).setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
+                        return comp;
+                    }
+                });
+                tbl_dataSementara.repaint();
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error saat mengatur custom style tabel: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     private void setTabelModel() {
         DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
@@ -1059,6 +1166,24 @@ public class FiturPenjualan extends javax.swing.JPanel {
         model.addColumn("Tanggal Transaksi");
         model.addColumn("Nama Pelanggan");
         model.addColumn("Nama Kasir");
+    }
+    
+    private void setPlaceholderField() {
+        txt_idPelanggan.setText("ID");
+        txt_namaPelanggan.setText("Nama");
+        txt_alamatPelanggan.setText("Alamat");
+        txt_teleponPelanggan.setText("Telepon");
+        txt_idProduk.setText("ID");
+        txt_namaProduk.setText("Produk");
+        txt_satuanProduk.setText("Satuan");
+        txt_bayar.setText("Rp.0");
+        txt_kembalian.setText("Rp.0");
+        
+        txt_hargaProduk.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Rp.0");
+        txt_jumlah.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "0");
+        txt_subtotal.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Rp.0");
+        txt_totalHarga.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Rp.0");
+        txt_search.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Pencarian");
     }
 
     private void getData(DefaultTableModel model) {
@@ -1101,6 +1226,7 @@ public class FiturPenjualan extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tbl_dataDetail.getModel();
         model.addColumn("ID Penjualan");
         model.addColumn("ID Produk");
+        model.addColumn("ID Kategori");
         model.addColumn("Nama Produk");
         model.addColumn("Jumlah");
         model.addColumn("Subtotal");
@@ -1111,10 +1237,11 @@ public class FiturPenjualan extends javax.swing.JPanel {
         model.setRowCount(0);
         
         try {
-            String sql = "SELECT detail_penjualan.id_penjualan, produk.id_produk, produk.nama_produk,\n" +
+            String sql = "SELECT detail_penjualan.id_penjualan, produk.id_produk, kategori.id_kategori, produk.nama_produk,\n" +
                          "detail_penjualan.jumlah, detail_penjualan.subtotal, detail_penjualan.status_bayar\n" +
                          "FROM detail_penjualan\n" +
                          "INNER JOIN produk ON produk.id_produk = detail_penjualan.id_produk\n" +
+                         "INNER JOIN kategori ON kategori.id_kategori = produk.id_kategori\n" +
                          "WHERE detail_penjualan.id_penjualan = '"+id+"'" +
                          "ORDER BY detail_penjualan.id_penjualan ASC";
             try (PreparedStatement st = conn.prepareStatement(sql)){
@@ -1123,6 +1250,7 @@ public class FiturPenjualan extends javax.swing.JPanel {
                 while (rs.next()) {
                     String idPenjualan         = rs.getString("id_penjualan");
                     String idProduk            = rs.getString("id_produk");
+                    String idKategori          = rs.getString("id_kategori");
                     String namaProduk          = rs.getString("nama_produk");
                     int jumlahBeli             = rs.getInt("jumlah");
                     int subtotal               = rs.getInt("subtotal");
@@ -1131,6 +1259,7 @@ public class FiturPenjualan extends javax.swing.JPanel {
                     Object[] rowData = {
                         idPenjualan,
                         idProduk,
+                        idKategori,
                         namaProduk,
                         jumlahBeli,
                         formatRupiah(subtotal), 

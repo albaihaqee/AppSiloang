@@ -12,10 +12,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class FiturPelanggan extends javax.swing.JPanel {
 
@@ -27,15 +28,11 @@ public class FiturPelanggan extends javax.swing.JPanel {
 
         conn = Koneksi.getConnection();
         this.userID = userID;
+        setupCustomTableStyle();
         setTabelModel();
         loadData();
+        setPlaceholderField();
         setButtonIcons();
-
-        txt_idPelanggan.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "ID Pelanggan");
-        txt_namaPelanggan.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nama");
-        txt_alamatPelanggan.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Alamat");
-        txt_teleponPelanggan.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "08xxxxxxxxxx");
-        txt_search.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Pencarian");
         
         FlatSVGIcon dashboardIcon = new FlatSVGIcon("icons/pelanggan.svg").derive(15, 15);
         dashboardIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> new Color(17, 97, 171)));
@@ -81,6 +78,10 @@ public class FiturPelanggan extends javax.swing.JPanel {
         rb_lakiLaki = new javax.swing.JRadioButton();
         rb_perempuan = new javax.swing.JRadioButton();
         txt_tanggal = new com.toedter.calendar.JDateChooser();
+        lb_rfidMember = new javax.swing.JLabel();
+        txt_rfidMember = new javax.swing.JTextField();
+        lb_pointMember = new javax.swing.JLabel();
+        txt_pointMember = new javax.swing.JTextField();
 
         setLayout(new java.awt.CardLayout());
 
@@ -225,7 +226,7 @@ public class FiturPelanggan extends javax.swing.JPanel {
                     .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_batal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
                 .addGap(10, 10, 10))
         );
 
@@ -300,6 +301,18 @@ public class FiturPelanggan extends javax.swing.JPanel {
         rb_perempuan.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         rb_perempuan.setText("Perempuan");
 
+        lb_rfidMember.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        lb_rfidMember.setText("RFID");
+
+        txt_rfidMember.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_rfidMember.setForeground(new java.awt.Color(102, 102, 102));
+
+        lb_pointMember.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        lb_pointMember.setText("Point");
+
+        txt_pointMember.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_pointMember.setForeground(new java.awt.Color(102, 102, 102));
+
         javax.swing.GroupLayout panelAddLayout = new javax.swing.GroupLayout(panelAdd);
         panelAdd.setLayout(panelAddLayout);
         panelAddLayout.setHorizontalGroup(
@@ -307,31 +320,51 @@ public class FiturPelanggan extends javax.swing.JPanel {
             .addGroup(panelAddLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_idPelanggan, javax.swing.GroupLayout.DEFAULT_SIZE, 890, Short.MAX_VALUE)
-                    .addComponent(txt_namaPelanggan)
+                    .addGroup(panelAddLayout.createSequentialGroup()
+                        .addComponent(lb_pointMember)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelAddLayout.createSequentialGroup()
-                        .addComponent(icon_pelanggan)
-                        .addGap(7, 7, 7)
-                        .addComponent(jLabel2))
-                    .addComponent(jLabel6)
-                    .addGroup(panelAddLayout.createSequentialGroup()
-                        .addComponent(btn_save)
-                        .addGap(10, 10, 10)
-                        .addComponent(btn_cancel))
-                    .addComponent(lb_satuan)
-                    .addComponent(lb_id)
-                    .addComponent(lb_nama)
-                    .addComponent(lb_stok)
-                    .addComponent(lb_hargaBeli)
-                    .addComponent(txt_teleponPelanggan)
-                    .addComponent(txt_alamatPelanggan)
-                    .addGroup(panelAddLayout.createSequentialGroup()
-                        .addComponent(rb_lakiLaki)
-                        .addGap(15, 15, 15)
-                        .addComponent(rb_perempuan))
-                    .addComponent(lb_tanggal)
-                    .addComponent(txt_tanggal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(10, 10, 10))
+                        .addGroup(panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txt_pointMember, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txt_namaPelanggan, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txt_teleponPelanggan, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txt_alamatPelanggan, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txt_tanggal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(panelAddLayout.createSequentialGroup()
+                                .addComponent(icon_pelanggan)
+                                .addGap(7, 7, 7)
+                                .addComponent(jLabel2))
+                            .addGroup(panelAddLayout.createSequentialGroup()
+                                .addGroup(panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelAddLayout.createSequentialGroup()
+                                        .addComponent(txt_idPelanggan)
+                                        .addGap(10, 10, 10))
+                                    .addGroup(panelAddLayout.createSequentialGroup()
+                                        .addGroup(panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelAddLayout.createSequentialGroup()
+                                                .addComponent(btn_save)
+                                                .addGap(10, 10, 10)
+                                                .addComponent(btn_cancel))
+                                            .addComponent(lb_satuan, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelAddLayout.createSequentialGroup()
+                                                .addComponent(lb_id, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addGap(218, 218, 218))
+                                            .addComponent(lb_nama, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lb_stok, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lb_hargaBeli, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelAddLayout.createSequentialGroup()
+                                                .addComponent(rb_lakiLaki)
+                                                .addGap(15, 15, 15)
+                                                .addComponent(rb_perempuan))
+                                            .addComponent(lb_tanggal, javax.swing.GroupLayout.Alignment.LEADING))
+                                        .addGap(220, 220, 220)))
+                                .addGroup(panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(panelAddLayout.createSequentialGroup()
+                                        .addComponent(lb_rfidMember, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGap(412, 412, 412))
+                                    .addComponent(txt_rfidMember))))
+                        .addGap(10, 10, 10))))
         );
         panelAddLayout.setVerticalGroup(
             panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -349,18 +382,26 @@ public class FiturPelanggan extends javax.swing.JPanel {
                     .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
-                .addComponent(lb_id)
+                .addGroup(panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lb_id)
+                    .addComponent(lb_rfidMember))
                 .addGap(10, 10, 10)
-                .addComponent(txt_idPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_idPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_rfidMember, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addComponent(lb_nama)
                 .addGap(10, 10, 10)
                 .addComponent(txt_namaPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
+                .addComponent(lb_pointMember)
+                .addGap(10, 10, 10)
+                .addComponent(txt_pointMember, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
                 .addComponent(lb_satuan)
-                .addGap(8, 8, 8)
+                .addGap(10, 10, 10)
                 .addComponent(txt_alamatPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(10, 10, 10)
                 .addComponent(lb_stok)
                 .addGap(10, 10, 10)
                 .addComponent(txt_teleponPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -374,7 +415,7 @@ public class FiturPelanggan extends javax.swing.JPanel {
                 .addComponent(lb_tanggal)
                 .addGap(10, 10, 10)
                 .addComponent(txt_tanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(105, Short.MAX_VALUE))
+                .addGap(10, 10, 10))
         );
 
         panelMain.add(panelAdd, "card2");
@@ -451,6 +492,8 @@ public class FiturPelanggan extends javax.swing.JPanel {
     private javax.swing.JLabel lb_id;
     private javax.swing.JLabel lb_nama;
     private javax.swing.JLabel lb_pel;
+    private javax.swing.JLabel lb_pointMember;
+    private javax.swing.JLabel lb_rfidMember;
     private javax.swing.JLabel lb_satuan;
     private javax.swing.JLabel lb_stok;
     private javax.swing.JLabel lb_tanggal;
@@ -464,6 +507,8 @@ public class FiturPelanggan extends javax.swing.JPanel {
     private javax.swing.JTextField txt_alamatPelanggan;
     private javax.swing.JTextField txt_idPelanggan;
     private javax.swing.JTextField txt_namaPelanggan;
+    private javax.swing.JTextField txt_pointMember;
+    private javax.swing.JTextField txt_rfidMember;
     private javax.swing.JTextField txt_search;
     private com.toedter.calendar.JDateChooser txt_tanggal;
     private javax.swing.JTextField txt_teleponPelanggan;
@@ -490,15 +535,82 @@ public class FiturPelanggan extends javax.swing.JPanel {
         rb_jenisKelamin.clearSelection();
         txt_tanggal.setDate(null);
     }
+    
+    private void setupCustomTableStyle() {
+        try {
+            Color headerColor = new Color(17, 97, 171);
+            Color selectionColor = new Color(200, 200, 200);
+
+            UIManager.put("TableHeader.background", headerColor);
+            UIManager.put("TableHeader.foreground", Color.WHITE);
+            UIManager.put("Table.selectionBackground", selectionColor);
+            UIManager.put("Table.selectionForeground", Color.BLACK); // Text hitam untuk kontras dengan background abu-abu
+            UIManager.put("Table.alternateRowColor", new Color(240, 240, 240));
+
+            if (tbl_data != null) {
+                tbl_data.getTableHeader().setBackground(headerColor);
+                tbl_data.getTableHeader().setForeground(Color.WHITE);
+                tbl_data.setFocusable(false);
+                tbl_data.setRowSelectionAllowed(true);
+                tbl_data.setColumnSelectionAllowed(false);
+                tbl_data.setRowHeight(30);
+                tbl_data.setShowGrid(false);
+                tbl_data.setShowHorizontalLines(false);
+                tbl_data.setShowVerticalLines(false);
+                tbl_data.setIntercellSpacing(new Dimension(0, 0));
+
+                tbl_data.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+                    @Override
+                    public Component getTableCellRendererComponent(JTable table, Object value, 
+                            boolean isSelected, boolean hasFocus, int row, int column) {
+                        Component comp = super.getTableCellRendererComponent(table, value, 
+                                isSelected, false, row, column);
+
+                        if (isSelected) {
+                            comp.setBackground(selectionColor);
+                            comp.setForeground(Color.BLACK); // Text hitam untuk kontras
+                        } else {
+                            if (row % 2 == 0) {
+                                comp.setBackground(Color.WHITE);
+                            } else {
+                                comp.setBackground(new Color(240, 240, 240));
+                            }
+                            comp.setForeground(Color.BLACK);
+                        }
+
+                        ((JComponent) comp).setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
+                        return comp;
+                    }
+                });
+
+                tbl_data.repaint();
+            }
+        } catch (Exception e) {
+            System.err.println("Error saat mengatur custom style tabel: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     private void setTabelModel() {
         DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
         model.addColumn("ID Pelanggan");
+        model.addColumn("RFID Member");
         model.addColumn("Nama Pelanggan");
+        model.addColumn("Point");
         model.addColumn("Alamat");
         model.addColumn("Telepon");
         model.addColumn("Jenis Kelamin");
         model.addColumn("Tanggal Bergabung");
+    }
+    
+    private void setPlaceholderField() {
+        txt_idPelanggan.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "ID Pelanggan");
+        txt_rfidMember.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "RFID Member");
+        txt_namaPelanggan.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nama Pelanggan");
+        txt_pointMember.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "0");
+        txt_alamatPelanggan.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Alamat");
+        txt_teleponPelanggan.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "08xxxxxxxxxx");
+        txt_search.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Pencarian");
     }
 
     private void getData(DefaultTableModel model) {
@@ -511,13 +623,15 @@ public class FiturPelanggan extends javax.swing.JPanel {
 
                 while (rs.next()) {
                     String idPelanggan = rs.getString("id_pelanggan");
+                    String rfidMember = rs.getString("rfid_member");
                     String namaPelanggan = rs.getString("nama_pelanggan");
+                    String pointMember = rs.getString("point");
                     String alamatPelanggan = rs.getString("alamat");
                     String teleponPelanggan = rs.getString("telepon");
                     String jenisKelamin = rs.getString("jenis_kelamin");
                     String tanggalBergabung = rs.getString("tanggal_bergabung");
 
-                    Object[] rowData = {idPelanggan, namaPelanggan, alamatPelanggan, teleponPelanggan, jenisKelamin, tanggalBergabung};
+                    Object[] rowData = {idPelanggan, rfidMember, namaPelanggan, pointMember, alamatPelanggan, teleponPelanggan, jenisKelamin, tanggalBergabung};
                     model.addRow(rowData);
                 }
             }
@@ -575,7 +689,9 @@ public class FiturPelanggan extends javax.swing.JPanel {
 
     private void insertData() {
         String idPelanggan = txt_idPelanggan.getText();
+        String rfidMember = txt_rfidMember.getText();
         String namaPelanggan = txt_namaPelanggan.getText();
+        String pointMember = txt_pointMember.getText();
         String alamatPelanggan = txt_alamatPelanggan.getText();
         String teleponPelanggan = txt_teleponPelanggan.getText();
         String jenisKelamin;
@@ -608,14 +724,16 @@ public class FiturPelanggan extends javax.swing.JPanel {
         }
 
         try {
-            String sql = "INSERT INTO pelanggan (id_pelanggan, nama_pelanggan, alamat, telepon, jenis_kelamin, tanggal_bergabung) VALUES (?,?,?,?,?,?)";
+            String sql = "INSERT INTO pelanggan (id_pelanggan, rfid_member, nama_pelanggan, point, alamat, telepon, jenis_kelamin, tanggal_bergabung) VALUES (?,?,?,?,?,?,?,?)";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, idPelanggan);
-            st.setString(2, namaPelanggan);
-            st.setString(3, alamatPelanggan);
-            st.setString(4, teleponPelanggan);
-            st.setString(5, jenisKelamin);
-            st.setString(6, tanggalBergabung);
+            st.setString(2, rfidMember);
+            st.setString(3, namaPelanggan);
+            st.setString(4, pointMember);
+            st.setString(5, alamatPelanggan);
+            st.setString(6, teleponPelanggan);
+            st.setString(7, jenisKelamin);
+            st.setString(8, tanggalBergabung);
 
             int rowInserted = st.executeUpdate();
             if (rowInserted > 0) {
@@ -638,13 +756,16 @@ public class FiturPelanggan extends javax.swing.JPanel {
 
         txt_idPelanggan.setEnabled(false);  //Gabisa diklik
         txt_tanggal.setEnabled(false);  //Gabisa diklik
+        txt_pointMember.setEnabled(false);  //Gabisa diklik
 
         txt_idPelanggan.setText(tbl_data.getValueAt(row, 0).toString());
-        txt_namaPelanggan.setText(tbl_data.getValueAt(row, 1).toString());
-        txt_alamatPelanggan.setText(tbl_data.getValueAt(row, 2).toString());
-        txt_teleponPelanggan.setText(tbl_data.getValueAt(row, 3).toString());
+        txt_rfidMember.setText(tbl_data.getValueAt(row, 1).toString());
+        txt_namaPelanggan.setText(tbl_data.getValueAt(row, 2).toString());
+        txt_pointMember.setText(tbl_data.getValueAt(row, 3).toString());
+        txt_alamatPelanggan.setText(tbl_data.getValueAt(row, 4).toString());
+        txt_teleponPelanggan.setText(tbl_data.getValueAt(row, 5).toString());
 
-        String jenisKelamin = tbl_data.getValueAt(row, 4).toString();
+        String jenisKelamin = tbl_data.getValueAt(row, 6).toString();
         if (jenisKelamin.equals("Laki - laki")) {
             rb_lakiLaki.setSelected(true);
         } else if (jenisKelamin.equals("Perempuan")) {
@@ -665,7 +786,9 @@ public class FiturPelanggan extends javax.swing.JPanel {
 
     private void updateData() {
         String idPelanggan = txt_idPelanggan.getText();
+        String rfidMember = txt_rfidMember.getText();
         String namaPelanggan = txt_namaPelanggan.getText();
+        String pointMember = txt_pointMember.getText();
         String alamatPelanggan = txt_alamatPelanggan.getText();
         String teleponPelanggan = txt_teleponPelanggan.getText();
         String jenisKelamin;
@@ -687,20 +810,22 @@ public class FiturPelanggan extends javax.swing.JPanel {
             tanggalBergabung = sdf.format(tanggal);
         }
 
-        if (idPelanggan.isEmpty() || namaPelanggan.isEmpty() || alamatPelanggan.isEmpty() || teleponPelanggan.isEmpty() || jenisKelamin.isEmpty() || tanggalBergabung.isEmpty()) {
+        if (idPelanggan.isEmpty() || rfidMember.isEmpty() || namaPelanggan.isEmpty() || pointMember.isEmpty() || alamatPelanggan.isEmpty() || teleponPelanggan.isEmpty() || jenisKelamin.isEmpty() || tanggalBergabung.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Semua kolom harus diisi !", "Validasi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         try {
-            String sql = "UPDATE pelanggan SET nama_pelanggan=?, alamat=?, telepon=?, jenis_kelamin=?, tanggal_bergabung=? WHERE id_pelanggan=?";
+            String sql = "UPDATE pelanggan SET rfid_member=?, nama_pelanggan=?, point=?, alamat=?, telepon=?, jenis_kelamin=?, tanggal_bergabung=? WHERE id_pelanggan=?";
             PreparedStatement st = conn.prepareStatement(sql);
-            st.setString(1, namaPelanggan);
-            st.setString(2, alamatPelanggan);
-            st.setString(3, teleponPelanggan);
-            st.setString(4, jenisKelamin);
-            st.setString(5, tanggalBergabung);
-            st.setString(6, idPelanggan);
+            st.setString(1, rfidMember);
+            st.setString(2, namaPelanggan);
+            st.setString(3, pointMember);
+            st.setString(4, alamatPelanggan);
+            st.setString(5, teleponPelanggan);
+            st.setString(6, jenisKelamin);
+            st.setString(7, tanggalBergabung);
+            st.setString(8, idPelanggan);
 
             int rowUpdated = st.executeUpdate();
             if (rowUpdated > 0) {
@@ -751,21 +876,24 @@ public class FiturPelanggan extends javax.swing.JPanel {
         model.setRowCount(0);
 
         try {
-            String sql = "SELECT * FROM pelanggan WHERE nama_pelanggan LIKE ? OR telepon LIKE ?";
+            String sql = "SELECT * FROM pelanggan WHERE rfid_member LIKE ? OR nama_pelanggan LIKE ? OR telepon LIKE ?";
             try (PreparedStatement st = conn.prepareStatement(sql)) {
                 st.setString(1, "%" + kataKunci + "%");
                 st.setString(2, "%" + kataKunci + "%");
+                st.setString(3, "%" + kataKunci + "%");
                 ResultSet rs = st.executeQuery();
 
                 while (rs.next()) {
                     String idPelanggan = rs.getString("id_pelanggan");
+                    String rfidMember = rs.getString("rfid_member");
                     String namaPelanggan = rs.getString("nama_pelanggan");
+                    String pointMember = rs.getString("point");
                     String alamatPelanggan = rs.getString("alamat");
                     String teleponPelanggan = rs.getString("telepon");
                     String jenisKelamin = rs.getString("jenis_kelamin");
                     String tanggalBergabung = rs.getString("tanggal_bergabung");
 
-                    Object[] rowData = {idPelanggan, namaPelanggan, alamatPelanggan, teleponPelanggan, jenisKelamin, tanggalBergabung};
+                    Object[] rowData = {idPelanggan, rfidMember, namaPelanggan, pointMember, alamatPelanggan, teleponPelanggan, jenisKelamin, tanggalBergabung};
                     model.addRow(rowData);
                 }
             }

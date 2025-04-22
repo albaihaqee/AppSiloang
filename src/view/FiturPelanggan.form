@@ -89,7 +89,7 @@
                           <Component id="btn_batal" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="470" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="471" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -236,35 +236,66 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txt_idPelanggan" alignment="0" pref="890" max="32767" attributes="0"/>
-                          <Component id="txt_namaPelanggan" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="icon_pelanggan" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
-                              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="btn_save" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                              <Component id="btn_cancel" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="lb_satuan" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lb_id" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lb_nama" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lb_stok" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lb_hargaBeli" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="txt_teleponPelanggan" alignment="0" max="32767" attributes="0"/>
-                          <Component id="txt_alamatPelanggan" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Component id="rb_lakiLaki" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
-                              <Component id="rb_perempuan" min="-2" max="-2" attributes="0"/>
+                              <Component id="lb_pointMember" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
-                          <Component id="lb_tanggal" min="-2" max="-2" attributes="0"/>
-                          <Component id="txt_tanggal" alignment="0" max="32767" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="txt_pointMember" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txt_namaPelanggan" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txt_teleponPelanggan" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txt_alamatPelanggan" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txt_tanggal" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Component id="icon_pelanggan" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
+                                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Component id="txt_idPelanggan" max="32767" attributes="0"/>
+                                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Group type="103" groupAlignment="1" attributes="0">
+                                                  <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Group type="102" alignment="0" attributes="0">
+                                                      <Component id="btn_save" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                                      <Component id="btn_cancel" min="-2" max="-2" attributes="0"/>
+                                                  </Group>
+                                                  <Component id="lb_satuan" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Group type="102" alignment="0" attributes="0">
+                                                      <Component id="lb_id" max="32767" attributes="0"/>
+                                                      <EmptySpace min="218" pref="218" max="-2" attributes="0"/>
+                                                  </Group>
+                                                  <Component id="lb_nama" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="lb_stok" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="lb_hargaBeli" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Group type="102" alignment="0" attributes="0">
+                                                      <Component id="rb_lakiLaki" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                                                      <Component id="rb_perempuan" min="-2" max="-2" attributes="0"/>
+                                                  </Group>
+                                                  <Component id="lb_tanggal" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <EmptySpace min="-2" pref="220" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="lb_rfidMember" max="32767" attributes="0"/>
+                                              <EmptySpace min="412" pref="412" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Component id="txt_rfidMember" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -287,18 +318,28 @@
                           <Component id="btn_cancel" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Component id="lb_id" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lb_id" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lb_rfidMember" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Component id="txt_idPelanggan" min="-2" pref="30" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="txt_idPelanggan" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="txt_rfidMember" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Component id="lb_nama" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Component id="txt_namaPelanggan" min="-2" pref="30" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                      <Component id="lb_pointMember" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                      <Component id="txt_pointMember" min="-2" pref="30" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Component id="lb_satuan" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Component id="txt_alamatPelanggan" min="-2" pref="30" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Component id="lb_stok" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Component id="txt_teleponPelanggan" min="-2" pref="30" max="-2" attributes="0"/>
@@ -313,7 +354,7 @@
                       <Component id="lb_tanggal" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Component id="txt_tanggal" min="-2" pref="30" max="-2" attributes="0"/>
-                      <EmptySpace pref="105" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -496,6 +537,42 @@
               </Properties>
             </Component>
             <Component class="com.toedter.calendar.JDateChooser" name="txt_tanggal">
+            </Component>
+            <Component class="javax.swing.JLabel" name="lb_rfidMember">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="SansSerif" size="12" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="RFID"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="txt_rfidMember">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="SansSerif" size="12" style="2"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="66" green="66" red="66" type="rgb"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lb_pointMember">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="SansSerif" size="12" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Point"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="txt_pointMember">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="SansSerif" size="12" style="2"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="66" green="66" red="66" type="rgb"/>
+                </Property>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

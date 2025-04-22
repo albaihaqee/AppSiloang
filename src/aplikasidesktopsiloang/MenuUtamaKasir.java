@@ -4,11 +4,6 @@ import view.FiturLogin;
 import view.FiturProduk;
 import view.FiturPenjualan;
 import java.awt.Color;
-import java.awt.PopupMenu;
-import java.awt.event.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.*;
 import view.FiturPelanggan;
 
 public class MenuUtamaKasir extends javax.swing.JFrame {
