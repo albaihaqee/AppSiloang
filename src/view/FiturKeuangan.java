@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -169,7 +170,14 @@ public class FiturKeuangan extends javax.swing.JPanel {
     }//GEN-LAST:event_tbl_dataMouseClicked
 
     private void txt_searchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyTyped
-        searchData((DefaultTableModel) tbl_data.getModel());
+        try {
+            int bulan = Integer.parseInt(txt_search.getText().trim());
+            int tahun = LocalDate.now().getYear(); // atau bisa juga ambil dari input lain kalau ada
+            searchData((DefaultTableModel) tbl_data.getModel(), bulan, tahun);
+        } catch (NumberFormatException e) {
+            // kasih pesan kalau input-nya bukan angka
+            System.out.println("Input harus berupa angka bulan (1-12)");
+        }
     }//GEN-LAST:event_txt_searchKeyTyped
 
 
@@ -192,13 +200,42 @@ public class FiturKeuangan extends javax.swing.JPanel {
             setTabelModel();
         }
 
-        getDataPenjualan(model);
-        getDataPembelian(model);
-        calculateLabaBersih(model);
+        try {
+            String sql = "SELECT tahun, bulan, total_penjualan, total_pembelian, laba_bersih, tanggal_update "
+                       + "FROM view_laporan_keuangan ORDER BY tahun, bulan";
+            try (PreparedStatement st = conn.prepareStatement(sql)) {
+                ResultSet rs = st.executeQuery();
+                while (rs.next()) {
+                    int tahun = rs.getInt("tahun");
+                    int bulan = rs.getInt("bulan");
+                    String namaBulan = getNamaBulan(bulan);
 
-        tbl_data.repaint();
+                    int totalPenjualan = rs.getInt("total_penjualan");
+                    int totalPembelian = rs.getInt("total_pembelian");
+                    int labaBersih = rs.getInt("laba_bersih");
+
+                    String totalPenjualanRp = formatRupiah(totalPenjualan);
+                    String totalPembelianRp = formatRupiah(totalPembelian);
+                    String labaBersihRp = formatRupiah(labaBersih);
+
+                    Date tanggalUpdate = rs.getDate("tanggal_update");
+
+                    Object[] rowData = {
+                        tahun,
+                        namaBulan,
+                        totalPenjualanRp,
+                        totalPembelianRp,
+                        labaBersihRp,
+                        tanggalUpdate
+                    };
+                    model.addRow(rowData);
+                }
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(FiturKeuangan.class.getName()).log(Level.SEVERE, null, e);
+        }
     }
-    
+
     private void setupCustomTableStyle() {
         try {
             Color headerColor = new Color(17, 97, 171);
@@ -261,204 +298,62 @@ public class FiturKeuangan extends javax.swing.JPanel {
         model.addColumn("Total Penjualan");
         model.addColumn("Total Pembelian");
         model.addColumn("Laba Bersih");
+        model.addColumn("Tanggal Update");
     }
-
-    private void getDataPenjualan(DefaultTableModel model) {
-        model.setRowCount(0);
-
-        try {
-            String sqlPenjualan = "SELECT YEAR(tanggal_transaksi) AS Tahun, MONTH(tanggal_transaksi) AS Bulan, SUM(total_harga) AS TotalPenjualan "
-                    + "FROM penjualan "
-                    + "GROUP BY YEAR(tanggal_transaksi), MONTH(tanggal_transaksi) "
-                    + "ORDER BY Tahun, Bulan";
-
-            try (PreparedStatement stPenjualan = conn.prepareStatement(sqlPenjualan)) {
-                ResultSet rsPenjualan = stPenjualan.executeQuery();
-
-                while (rsPenjualan.next()) {
-                    int tahun = rsPenjualan.getInt("Tahun");
-                    int bulan = rsPenjualan.getInt("Bulan");
-                    String namaBulan = getNamaBulan(bulan);
-                    int totalPenjualan = rsPenjualan.getInt("TotalPenjualan");
-                    String totalPenjualanRp = formatRupiah(totalPenjualan);
-
-                    boolean dataDitemukan = false;
-                    for (int i = 0; i < model.getRowCount(); i++) {
-                        if (model.getValueAt(i, 0).equals(tahun)
-                                && model.getValueAt(i, 1).equals(namaBulan)) {
-                            model.setValueAt(totalPenjualanRp, i, 2); // Update Total Penjualan
-                            dataDitemukan = true;
-                            break;
-                        }
-                    }
-                    if (!dataDitemukan) {
-                        Object[] rowData = {tahun, namaBulan, totalPenjualanRp, "Rp. 0", "Rp. 0"};
-                        model.addRow(rowData);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            Logger.getLogger(FiturKeuangan.class.getName()).log(Level.SEVERE, null, e);
-        }
-    }
-
-    private void getDataPembelian(DefaultTableModel model) {
-        try {
-            String sqlPembelian = "SELECT YEAR(tanggal_transaksi) AS Tahun, MONTH(tanggal_transaksi) AS Bulan, SUM(total_harga) AS TotalPembelian "
-                    + "FROM pembelian "
-                    + "GROUP BY YEAR(tanggal_transaksi), MONTH(tanggal_transaksi) "
-                    + "ORDER BY Tahun, Bulan";
-
-            try (PreparedStatement stPembelian = conn.prepareStatement(sqlPembelian)) {
-                ResultSet rsPembelian = stPembelian.executeQuery();
-
-                while (rsPembelian.next()) {
-                    int tahun = rsPembelian.getInt("Tahun");
-                    int bulan = rsPembelian.getInt("Bulan");
-                    String namaBulan = getNamaBulan(bulan);
-                    int totalPembelian = rsPembelian.getInt("TotalPembelian");
-                    String totalPembelianRp = formatRupiah(totalPembelian);
-
-                    boolean dataDitemukan = false;
-                    for (int i = 0; i < model.getRowCount(); i++) {
-                        if (model.getValueAt(i, 0).equals(tahun)
-                                && model.getValueAt(i, 1).equals(namaBulan)) {
-                            model.setValueAt(totalPembelianRp, i, 3); // Update Total Pembelian
-                            dataDitemukan = true;
-                            break;
-                        }
-                    }
-                    if (!dataDitemukan) {
-                        Object[] rowData = {tahun, namaBulan, "Rp. 0", totalPembelianRp, "Rp. 0"};
-                        model.addRow(rowData);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            Logger.getLogger(FiturKeuangan.class.getName()).log(Level.SEVERE, null, e);
-        }
-    }
-
+    
     private String getNamaBulan(int bulan) {
         String[] namaBulan = {
             "Januari", "Februari", "Maret", "April", "Mei", "Juni",
             "Juli", "Agustus", "September", "Oktober", "November", "Desember"
         };
-        return namaBulan[bulan - 1];
+
+        if (bulan >= 1 && bulan <= 12) {
+            return namaBulan[bulan - 1];
+        } else {
+            return "Bulan Tidak Valid";
+        }
     }
 
     private String formatRupiah(int amount) {
         NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
-        return nf.format(amount).replace("Rp", "Rp.").replace(",00", "");
+        String hasil = nf.format(amount);
+
+        // Replace Rp dan hilangkan ,00
+        hasil = hasil.replace("Rp", "Rp.").replace(",00", "").replace(" ", "");
+
+        return hasil;
     }
 
-    private int parseRupiah(String rupiah) {
-        try {
-
-            if (rupiah == null || rupiah.equals("Rp. 0")) {
-                return 0;
-            }
-            String cleanString = rupiah
-                    .replace("Rp.", "")
-                    .replace("Rp", "")
-                    .replace(".", "")
-                    .replace(",", "")
-                    .replace(" ", "")
-                    .trim();
-
-            if (cleanString.isEmpty()) {
-                return 0;
-            }
-
-            int result = Integer.parseInt(cleanString);
-            return result;
-
-        } catch (NumberFormatException e) {
-            System.out.println("Error parsing rupiah: " + rupiah);
-            System.out.println("Error detail: " + e.getMessage());
-            return 0;
-        }
-    }
-
-    private void calculateLabaBersih(DefaultTableModel model) {
-        try {
-            for (int i = 0; i < model.getRowCount(); i++) {
-                String totalPenjualanStr = (String) model.getValueAt(i, 2);
-                String totalPembelianStr = (String) model.getValueAt(i, 3);
-
-                int totalPenjualan = parseRupiah(totalPenjualanStr);
-                int totalPembelian = parseRupiah(totalPembelianStr);
-
-                int labaBersih = totalPenjualan - totalPembelian;
-
-                String formattedLabaBersih = formatRupiah(labaBersih);
-                model.setValueAt(formattedLabaBersih, i, 4);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void searchData(DefaultTableModel model) {
-        String kataKunci = txt_search.getText().trim().toLowerCase();
+    private void searchData(DefaultTableModel model, int bulan, int tahun) {
         model.setRowCount(0);
 
-        if (kataKunci.isEmpty()) {
-            return;
-        }
-
-        int bulan = -1;
-        String[] namaBulan = {
-            "januari", "februari", "maret", "april", "mei", "juni",
-            "juli", "agustus", "september", "oktober", "november", "desember"
-        };
-
-        boolean bulanDitemukan = false;
-        for (int i = 0; i < namaBulan.length; i++) {
-            if (namaBulan[i].startsWith(kataKunci)) {
-                bulan = i + 1;
-                bulanDitemukan = true;
-                break;
-            }
-        }
-
-        if (!bulanDitemukan) {
-            try {
-                bulan = Integer.parseInt(kataKunci);
-                if (bulan < 1 || bulan > 12) {
-                    Logger.getLogger(FiturKeuangan.class.getName()).log(Level.WARNING, "Input tidak valid: " + kataKunci);
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                Logger.getLogger(FiturKeuangan.class.getName()).log(Level.WARNING, "Input tidak valid: " + kataKunci);
-                return;
-            }
-        }
-
         try {
-            String sql = "SELECT "
-                    + "  MONTH(penjualan.tanggal_transaksi) AS Bulan, "
-                    + "  COALESCE(SUM(penjualan.total_harga), 0) AS TotalPenjualan, "
-                    + "  COALESCE(SUM(pembelian.total_harga), 0) AS TotalPembelian, "
-                    + "  (COALESCE(SUM(penjualan.total_harga), 0) - COALESCE(SUM(pembelian.total_harga), 0)) AS LabaBersih "
-                    + "FROM penjualan "
-                    + "LEFT JOIN pembelian ON MONTH(penjualan.tanggal_transaksi) = MONTH(pembelian.tanggal_transaksi) "
-                    + "WHERE MONTH(penjualan.tanggal_transaksi) = ? "
-                    + "GROUP BY MONTH(penjualan.tanggal_transaksi) "
-                    + "ORDER BY Bulan";
+            String sql = "SELECT tahun, bulan, total_penjualan, total_pembelian, laba_bersih, tanggal_update "
+                       + "FROM view_laporan_keuangan WHERE bulan = ? AND tahun = ? ORDER BY tahun, bulan";
 
             try (PreparedStatement st = conn.prepareStatement(sql)) {
                 st.setInt(1, bulan);
+                st.setInt(2, tahun);
                 ResultSet rs = st.executeQuery();
 
                 while (rs.next()) {
-                    int bulanResult = rs.getInt("Bulan");
-                    String namaBulanResult = getNamaBulan(bulanResult);
-                    int totalPenjualan = rs.getInt("TotalPenjualan");
-                    int totalPembelian = rs.getInt("TotalPembelian");
-                    int labaBersih = rs.getInt("LabaBersih");
+                    int tahunResult = rs.getInt("tahun");
+                    int bulanResult = rs.getInt("bulan");
+                    String namaBulan = getNamaBulan(bulanResult);
 
-                    Object[] rowData = {namaBulanResult, totalPenjualan, totalPembelian, labaBersih};
+                    String totalPenjualan = formatRupiah(rs.getInt("total_penjualan"));
+                    String totalPembelian = formatRupiah(rs.getInt("total_pembelian"));
+                    String labaBersih = formatRupiah(rs.getInt("laba_bersih"));
+                    String tanggalUpdate = rs.getString("tanggal_update");
+
+                    Object[] rowData = {
+                        tahunResult,
+                        namaBulan,
+                        totalPenjualan,
+                        totalPembelian,
+                        labaBersih,
+                        tanggalUpdate
+                    };
                     model.addRow(rowData);
                 }
             }
