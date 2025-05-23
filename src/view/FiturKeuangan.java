@@ -115,7 +115,7 @@ public class FiturKeuangan extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(tbl_data);
 
-        txt_search.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_search.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_search.setForeground(new java.awt.Color(102, 102, 102));
         txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {

@@ -74,7 +74,7 @@ public class FiturBarcode extends javax.swing.JPanel {
             }
         });
 
-        txt_barcode.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_barcode.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_barcode.setForeground(new java.awt.Color(102, 102, 102));
 
         pn_view.setBackground(new java.awt.Color(255, 255, 255));

@@ -186,7 +186,7 @@ public class FiturPembelian extends javax.swing.JPanel {
             }
         });
 
-        txt_search.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_search.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_search.setForeground(new java.awt.Color(102, 102, 102));
         txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -352,7 +352,7 @@ public class FiturPembelian extends javax.swing.JPanel {
         lb_tanggalPenjualan.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_tanggalPenjualan.setText("Tanggal ");
 
-        txt_idPembelian.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_idPembelian.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_idPembelian.setForeground(new java.awt.Color(102, 102, 102));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -443,7 +443,7 @@ public class FiturPembelian extends javax.swing.JPanel {
             }
         });
 
-        txt_idSupplier.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_idSupplier.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_idSupplier.setForeground(new java.awt.Color(102, 102, 102));
 
         btn_setPelanggan.setText("...");
@@ -451,16 +451,16 @@ public class FiturPembelian extends javax.swing.JPanel {
         lb_nama.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_nama.setText("Nama");
 
-        txt_namaSupplier.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_namaSupplier.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_namaSupplier.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_alamat.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_alamat.setText("Alamat");
 
-        txt_alamatSupplier.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_alamatSupplier.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_alamatSupplier.setForeground(new java.awt.Color(102, 102, 102));
 
-        txt_satuanProduk.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_satuanProduk.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_satuanProduk.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_satuan.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -469,10 +469,10 @@ public class FiturPembelian extends javax.swing.JPanel {
         lb_produk.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_produk.setText("Produk");
 
-        txt_namaProduk.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_namaProduk.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_namaProduk.setForeground(new java.awt.Color(102, 102, 102));
 
-        txt_idProduk.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_idProduk.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_idProduk.setForeground(new java.awt.Color(102, 102, 102));
 
         btn_setProduk.setText("...");
@@ -480,19 +480,19 @@ public class FiturPembelian extends javax.swing.JPanel {
         lb_idProduk.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_idProduk.setText("ID Produk");
 
-        txt_teleponSupplier.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_teleponSupplier.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_teleponSupplier.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_telepon.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_telepon.setText("Telepon");
 
-        txt_hargaProduk.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_hargaProduk.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_hargaProduk.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_hargaProduk.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_hargaProduk.setText("Harga");
 
-        txt_bayar.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_bayar.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_bayar.setForeground(new java.awt.Color(102, 102, 102));
         txt_bayar.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -506,13 +506,13 @@ public class FiturPembelian extends javax.swing.JPanel {
         lb_subtotal.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_subtotal.setText("Subtotal");
 
-        txt_subtotal.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_subtotal.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_subtotal.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_jumlah.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_jumlah.setText("Jumlah");
 
-        txt_kembalian.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_kembalian.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_kembalian.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_kembalian.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -524,7 +524,7 @@ public class FiturPembelian extends javax.swing.JPanel {
         txt_totalHarga.setFont(new java.awt.Font("SansSerif", 2, 24)); // NOI18N
         txt_totalHarga.setForeground(new java.awt.Color(102, 102, 102));
 
-        txt_jumlah.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_jumlah.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_jumlah.setForeground(new java.awt.Color(102, 102, 102));
         txt_jumlah.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -1351,11 +1351,11 @@ public class FiturPembelian extends javax.swing.JPanel {
         String hargaBeli = txt_hargaProduk.getText();
         String jumlahBeli = txt_jumlah.getText();
         String subtotal = txt_subtotal.getText();
-        String statusBayar = "Sudah dibayar";
+        String metodeBayar = "NULL";
 
         if(idProduk.isEmpty() || namaProduk.isEmpty() || satuanProduk.isEmpty() || 
            hargaBeli.isEmpty() || jumlahBeli.isEmpty() || subtotal.isEmpty() || 
-           statusBayar.isEmpty()) {
+           metodeBayar.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Semua kolom harus diisi !", 
                                         "Validasi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -1369,7 +1369,7 @@ public class FiturPembelian extends javax.swing.JPanel {
             int subtotalInt = Integer.parseInt(cleanSubtotal);
 
             String sql = "INSERT INTO pn_sementara (id_produk, nama_produk, satuan, " +
-                        "harga, jumlah_beli, subtotal, status_bayar) VALUES (?,?,?,?,?,?,?)";
+                        "harga, jumlah_beli, subtotal, metode_bayar) VALUES (?,?,?,?,?,?,?)";
 
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, idProduk);
@@ -1378,7 +1378,7 @@ public class FiturPembelian extends javax.swing.JPanel {
             st.setInt(4, hargaBeliInt);   
             st.setString(5, jumlahBeli);
             st.setInt(6, subtotalInt);      
-            st.setString(7, statusBayar);
+            st.setString(7, metodeBayar);
 
             st.executeUpdate();
             getUpdateTotalHargaDanBeli();
@@ -1605,7 +1605,7 @@ public class FiturPembelian extends javax.swing.JPanel {
        
         try {
             String sql = "INSERT INTO detail_pembelian (id_pembelian, id_produk, jumlah, subtotal, status_bayar) " +
-                         "SELECT ?, id_produk, jumlah_beli, subtotal, status_bayar " +
+                         "SELECT ?, id_produk, jumlah_beli, subtotal, metode_bayar " +
                          "FROM pn_sementara";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, idPembelian); // Set id_penjualan untuk semua produk

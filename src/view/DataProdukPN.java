@@ -106,7 +106,7 @@ public class DataProdukPN extends javax.swing.JDialog {
         tbl_data.setRowHeight(30);
         jScrollPane1.setViewportView(tbl_data);
 
-        txt_search.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_search.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_search.setForeground(new java.awt.Color(102, 102, 102));
 
         javax.swing.GroupLayout panelViewLayout = new javax.swing.GroupLayout(panelView);
@@ -239,9 +239,10 @@ public class DataProdukPN extends javax.swing.JDialog {
     private void setTabelModel() {
         DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
         model.addColumn("ID Produk");
+        model.addColumn("Barcode");
         model.addColumn("Nama Produk");
-        model.addColumn("Satuan");
         model.addColumn("Stok");
+        model.addColumn("Satuan");
         model.addColumn("Harga Beli");
         model.addColumn("Harga Jual");
     }
@@ -256,13 +257,14 @@ public class DataProdukPN extends javax.swing.JDialog {
                 
                 while (rs.next()) {
                     String idProduk          = rs.getString("id_produk");
+                    String barcodeProduk     = rs.getString("barcode");
                     String namaProduk        = rs.getString("nama_produk");
-                    String satuanProduk      = rs.getString("satuan");
                     String stokProduk        = rs.getString("stok");
+                    String satuanProduk      = rs.getString("satuan");
                     String hargaBeliProduk   = rs.getString("harga_beli");
                     String hargaJualProduk   = rs.getString("harga_jual");
                     
-                    Object[] rowData = {idProduk, namaProduk, satuanProduk, stokProduk, hargaBeliProduk, hargaJualProduk};
+                    Object[] rowData = {idProduk, barcodeProduk, namaProduk, stokProduk, satuanProduk, hargaBeliProduk, hargaJualProduk};
                     model.addRow(rowData);
                 }
             }
@@ -278,21 +280,23 @@ public class DataProdukPN extends javax.swing.JDialog {
         model.setRowCount(0);
         
         try {
-            String sql = "SELECT * FROM produk WHERE id_produk LIKE ? OR nama_produk LIKE ?";
+            String sql = "SELECT * FROM produk WHERE id_produk LIKE ? OR barcode LIKE ? OR nama_produk LIKE ?";
             try (PreparedStatement st = conn.prepareStatement(sql)){
                 st.setString(1, "%" + kataKunci + "%");
                 st.setString(2, "%" + kataKunci + "%");
+                st.setString(3, "%" + kataKunci + "%");
                 ResultSet rs = st.executeQuery();
                 
                 while (rs.next()) {
                     String idProduk          = rs.getString("id_produk");
+                    String barcodeProduk     = rs.getString("barcode");
                     String namaProduk        = rs.getString("nama_produk");
-                    String satuanProduk      = rs.getString("satuan");
                     String stokProduk        = rs.getString("stok");
+                    String satuanProduk      = rs.getString("satuan");
                     String hargaBeliProduk   = rs.getString("harga_beli");
                     String hargaJualProduk   = rs.getString("harga_jual");
                     
-                    Object[] rowData = {idProduk, namaProduk, satuanProduk, stokProduk, hargaBeliProduk, hargaJualProduk};
+                    Object[] rowData = {idProduk, barcodeProduk, namaProduk, stokProduk, satuanProduk, hargaBeliProduk, hargaJualProduk};
                     model.addRow(rowData);
                 }
             }

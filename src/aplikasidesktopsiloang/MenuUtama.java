@@ -573,7 +573,7 @@ public class MenuUtama extends javax.swing.JFrame {
 
         lb_stokOpname.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         lb_stokOpname.setForeground(new java.awt.Color(255, 255, 255));
-        lb_stokOpname.setText("Stok Control");
+        lb_stokOpname.setText("Stok Opname");
         lb_stokOpname.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lb_stokOpnameMouseClicked(evt);
@@ -594,8 +594,8 @@ public class MenuUtama extends javax.swing.JFrame {
                 .addGap(19, 19, 19)
                 .addComponent(icon_membership, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lb_stokOpname, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addComponent(lb_stokOpname)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(pn_btnMembershipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pn_btnMembershipLayout.createSequentialGroup()
                     .addContainerGap()

@@ -173,7 +173,7 @@ public class FiturProduk extends javax.swing.JPanel {
             }
         });
 
-        txt_search.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_search.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_search.setForeground(new java.awt.Color(102, 102, 102));
         txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -234,7 +234,7 @@ public class FiturProduk extends javax.swing.JPanel {
         lb_nama.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_nama.setText("Nama");
 
-        txt_id.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_id.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_id.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_id.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -249,13 +249,13 @@ public class FiturProduk extends javax.swing.JPanel {
         lb_stok.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_stok.setText("Stok");
 
-        txt_nama.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_nama.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_nama.setForeground(new java.awt.Color(102, 102, 102));
 
-        txt_stok.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_stok.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_stok.setForeground(new java.awt.Color(102, 102, 102));
 
-        txt_hargaBeli.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_hargaBeli.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_hargaBeli.setForeground(new java.awt.Color(102, 102, 102));
 
         cb_kategori.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih Kategori" }));
@@ -263,10 +263,10 @@ public class FiturProduk extends javax.swing.JPanel {
         lb_hargaJual.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_hargaJual.setText("Harga Jual");
 
-        txt_hargaJual.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_hargaJual.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_hargaJual.setForeground(new java.awt.Color(102, 102, 102));
 
-        txt_barcode.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_barcode.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_barcode.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_barcode.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N

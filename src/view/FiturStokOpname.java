@@ -176,7 +176,7 @@ public class FiturStokOpname extends javax.swing.JPanel {
             }
         });
 
-        txt_search.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_search.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_search.setForeground(new java.awt.Color(102, 102, 102));
         txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -268,7 +268,7 @@ public class FiturStokOpname extends javax.swing.JPanel {
         lb_nama.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_nama.setText("Tanggal Opname");
 
-        txt_id.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_id.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_id.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_id.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -280,13 +280,13 @@ public class FiturStokOpname extends javax.swing.JPanel {
         lb_minPembelian.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_minPembelian.setText("Produk");
 
-        txt_stokSistem.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_stokSistem.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_stokSistem.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_keterangan.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_keterangan.setText("Stok Fisik");
 
-        txt_stokFisik.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_stokFisik.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_stokFisik.setForeground(new java.awt.Color(102, 102, 102));
 
         cb_idProduk.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih Produk" }));
@@ -294,7 +294,7 @@ public class FiturStokOpname extends javax.swing.JPanel {
         lb_keterangan1.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_keterangan1.setText("Keterangan");
 
-        txt_keterangan.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_keterangan.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_keterangan.setForeground(new java.awt.Color(102, 102, 102));
 
         javax.swing.GroupLayout panelAddLayout = new javax.swing.GroupLayout(panelAdd);

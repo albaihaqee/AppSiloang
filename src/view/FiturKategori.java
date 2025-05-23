@@ -163,7 +163,7 @@ public class FiturKategori extends javax.swing.JPanel {
             }
         });
 
-        txt_search.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_search.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_search.setForeground(new java.awt.Color(102, 102, 102));
         txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -255,7 +255,7 @@ public class FiturKategori extends javax.swing.JPanel {
         lb_nama.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_nama.setText("Nama");
 
-        txt_idKategori.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_idKategori.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_idKategori.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_id.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -264,10 +264,10 @@ public class FiturKategori extends javax.swing.JPanel {
         lb_satuan.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_satuan.setText("Deskripsi");
 
-        txt_namaKategori.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_namaKategori.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_namaKategori.setForeground(new java.awt.Color(102, 102, 102));
 
-        txt_deskripsi.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_deskripsi.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_deskripsi.setForeground(new java.awt.Color(102, 102, 102));
 
         javax.swing.GroupLayout panelAddLayout = new javax.swing.GroupLayout(panelAdd);

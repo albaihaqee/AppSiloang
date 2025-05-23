@@ -234,7 +234,9 @@ public class DataPelanggan extends javax.swing.JDialog {
     private void setTabelModel() {
         DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
         model.addColumn("ID Pelanggan");
+        model.addColumn("RFID Member");
         model.addColumn("Nama");
+        model.addColumn("Point");
         model.addColumn("Alamat");
         model.addColumn("Telepon");
     }
@@ -249,11 +251,13 @@ public class DataPelanggan extends javax.swing.JDialog {
                 
                 while (rs.next()) {
                     String idPelanggan          = rs.getString("id_pelanggan");
+                    String rfidMember           = rs.getString("rfid_member");
                     String namaPelanggan        = rs.getString("nama_pelanggan");
+                    String pointMember          = rs.getString("point");
                     String alamatPelanggan      = rs.getString("alamat");
                     String teleponPelanggan     = rs.getString("telepon");
                     
-                    Object[] rowData = {idPelanggan, namaPelanggan, alamatPelanggan, teleponPelanggan};
+                    Object[] rowData = {idPelanggan, rfidMember, namaPelanggan, pointMember, alamatPelanggan, teleponPelanggan};
                     model.addRow(rowData);
                 }
             }
@@ -269,19 +273,22 @@ public class DataPelanggan extends javax.swing.JDialog {
         model.setRowCount(0);
         
         try {
-            String sql = "SELECT * FROM pelanggan WHERE id_pelanggan LIKE ? OR nama_pelanggan LIKE ?";
+            String sql = "SELECT * FROM pelanggan WHERE id_pelanggan LIKE ? OR rfid_member LIKE ? OR nama_pelanggan LIKE ?";
             try (PreparedStatement st = conn.prepareStatement(sql)){
                 st.setString(1, "%" + kataKunci + "%");
                 st.setString(2, "%" + kataKunci + "%");
+                st.setString(3, "%" + kataKunci + "%");
                 ResultSet rs = st.executeQuery();
                 
                 while (rs.next()) {
                     String idPelanggan          = rs.getString("id_pelanggan");
+                    String rfidMember           = rs.getString("rfid_member");
                     String namaPelanggan        = rs.getString("nama_pelanggan");
+                    String pointMember          = rs.getString("point");
                     String alamatPelanggan      = rs.getString("alamat");
                     String teleponPelanggan     = rs.getString("telepon");
                     
-                    Object[] rowData = {idPelanggan, namaPelanggan, alamatPelanggan, teleponPelanggan};
+                    Object[] rowData = {idPelanggan, rfidMember, namaPelanggan, pointMember, alamatPelanggan, teleponPelanggan};
                     model.addRow(rowData);
                 }
             }
@@ -294,9 +301,7 @@ public class DataPelanggan extends javax.swing.JDialog {
         int row = tbl_data.getSelectedRow();
         
         idPelanggan        = tbl_data.getValueAt(row, 0).toString();
-        namaPelanggan      = tbl_data.getValueAt(row, 1).toString();
-        alamatPelanggan    = tbl_data.getValueAt(row, 2).toString();
-        teleponPelanggan   = tbl_data.getValueAt(row, 3).toString();
+        namaPelanggan      = tbl_data.getValueAt(row, 2).toString();
         
         dispose();
     }

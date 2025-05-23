@@ -162,7 +162,7 @@ public class FiturSupplier extends javax.swing.JPanel {
             }
         });
 
-        txt_search.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_search.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_search.setForeground(new java.awt.Color(102, 102, 102));
         txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -254,7 +254,7 @@ public class FiturSupplier extends javax.swing.JPanel {
         lb_nama.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_nama.setText("Nama");
 
-        txt_idSupplier.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_idSupplier.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_idSupplier.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_id.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -266,13 +266,13 @@ public class FiturSupplier extends javax.swing.JPanel {
         lb_stok.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_stok.setText("Telepon");
 
-        txt_namaSupplier.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_namaSupplier.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_namaSupplier.setForeground(new java.awt.Color(102, 102, 102));
 
-        txt_teleponSupplier.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_teleponSupplier.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_teleponSupplier.setForeground(new java.awt.Color(102, 102, 102));
 
-        txt_alamatSupplier.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_alamatSupplier.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_alamatSupplier.setForeground(new java.awt.Color(102, 102, 102));
 
         javax.swing.GroupLayout panelAddLayout = new javax.swing.GroupLayout(panelAdd);

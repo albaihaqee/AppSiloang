@@ -174,7 +174,7 @@ public class FiturPelanggan extends javax.swing.JPanel {
             }
         });
 
-        txt_search.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_search.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_search.setForeground(new java.awt.Color(102, 102, 102));
         txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -266,7 +266,7 @@ public class FiturPelanggan extends javax.swing.JPanel {
         lb_nama.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_nama.setText("Nama");
 
-        txt_idPelanggan.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_idPelanggan.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_idPelanggan.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_id.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -281,16 +281,16 @@ public class FiturPelanggan extends javax.swing.JPanel {
         lb_stok.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_stok.setText("Telepon");
 
-        txt_namaPelanggan.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_namaPelanggan.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_namaPelanggan.setForeground(new java.awt.Color(102, 102, 102));
 
-        txt_teleponPelanggan.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_teleponPelanggan.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_teleponPelanggan.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_tanggal.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_tanggal.setText("Tanggal");
 
-        txt_alamatPelanggan.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_alamatPelanggan.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_alamatPelanggan.setForeground(new java.awt.Color(102, 102, 102));
 
         rb_jenisKelamin.add(rb_lakiLaki);
@@ -304,13 +304,13 @@ public class FiturPelanggan extends javax.swing.JPanel {
         lb_rfidMember.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_rfidMember.setText("RFID");
 
-        txt_rfidMember.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_rfidMember.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_rfidMember.setForeground(new java.awt.Color(102, 102, 102));
 
         lb_pointMember.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lb_pointMember.setText("Point");
 
-        txt_pointMember.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_pointMember.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_pointMember.setForeground(new java.awt.Color(102, 102, 102));
 
         javax.swing.GroupLayout panelAddLayout = new javax.swing.GroupLayout(panelAdd);
@@ -756,7 +756,7 @@ public class FiturPelanggan extends javax.swing.JPanel {
 
         txt_idPelanggan.setEnabled(false);  //Gabisa diklik
         txt_tanggal.setEnabled(false);  //Gabisa diklik
-        txt_pointMember.setEnabled(false);  //Gabisa diklik
+        //txt_pointMember.setEnabled(false);  //Gabisa diklik
 
         txt_idPelanggan.setText(tbl_data.getValueAt(row, 0).toString());
         txt_rfidMember.setText(tbl_data.getValueAt(row, 1).toString());

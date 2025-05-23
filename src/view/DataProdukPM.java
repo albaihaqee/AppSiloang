@@ -106,7 +106,7 @@ public class DataProdukPM extends javax.swing.JDialog {
         tbl_data.setRowHeight(30);
         jScrollPane1.setViewportView(tbl_data);
 
-        txt_search.setFont(new java.awt.Font("SansSerif", 2, 12)); // NOI18N
+        txt_search.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt_search.setForeground(new java.awt.Color(102, 102, 102));
 
         javax.swing.GroupLayout panelViewLayout = new javax.swing.GroupLayout(panelView);
