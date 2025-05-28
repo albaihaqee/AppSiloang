@@ -1,6 +1,7 @@
 package view;
 
 import Config.Koneksi;
+import aplikasidesktopsiloang.FiturReport;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,8 +9,6 @@ import java.sql.*;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.text.SimpleDateFormat;
@@ -27,9 +26,8 @@ import java.text.DecimalFormat;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;  
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
-import static jdk.vm.ci.common.InitTimer.timer;
+import service.ServiceReport;
 
 public class FiturPenjualan extends javax.swing.JPanel {
     
@@ -37,6 +35,7 @@ public class FiturPenjualan extends javax.swing.JPanel {
     private String userID;
     private String idPelangganTerpilih;
     private String selectedTransactionId;
+    private ServiceReport servisReport = new FiturReport();
     private Timer timer;
 
     public FiturPenjualan(String userID) {
@@ -83,6 +82,7 @@ public class FiturPenjualan extends javax.swing.JPanel {
         tbl_dataDetail = new javax.swing.JTable();
         btn_closeDetail = new javax.swing.JButton();
         lb_dataDetail = new javax.swing.JLabel();
+        btn_print = new javax.swing.JButton();
         panelAdd = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         icon_penjualan = new javax.swing.JLabel();
@@ -183,6 +183,11 @@ public class FiturPenjualan extends javax.swing.JPanel {
             }
         ));
         tbl_data.setRowHeight(30);
+        tbl_data.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_dataMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbl_data);
 
         btn_add.setBackground(new java.awt.Color(0, 0, 255));
@@ -276,6 +281,17 @@ public class FiturPenjualan extends javax.swing.JPanel {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE))
         );
 
+        btn_print.setBackground(new java.awt.Color(255, 0, 0));
+        btn_print.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        btn_print.setForeground(new java.awt.Color(255, 255, 255));
+        btn_print.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icon_add.png"))); // NOI18N
+        btn_print.setText("PRINT");
+        btn_print.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_printActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelViewLayout = new javax.swing.GroupLayout(panelView);
         panelView.setLayout(panelViewLayout);
         panelViewLayout.setHorizontalGroup(
@@ -290,6 +306,8 @@ public class FiturPenjualan extends javax.swing.JPanel {
                         .addGap(377, 731, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelViewLayout.createSequentialGroup()
                         .addComponent(btn_add)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_print)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelViewLayout.createSequentialGroup()
@@ -313,7 +331,8 @@ public class FiturPenjualan extends javax.swing.JPanel {
                 .addGap(10, 10, 10)
                 .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_print, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -828,9 +847,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
         else if(btn_save.getText().equals("SIMPAN"))
             {
                 insertData();
-                //insertDataDetail();
-                //updateStokProduk(); 
-                //updateStokTisuDanTutup(); 
                 deleteDataSementara();
                 resetForm();
                 loadData();
@@ -838,7 +854,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
             }
         else if(btn_save.getText().equals("PERBARUI"))
             {
-                //updateData();
                 resetForm();
                 resetFormProduk();
                 resetPembayaran();
@@ -886,6 +901,19 @@ public class FiturPenjualan extends javax.swing.JPanel {
         setProduk();
     }//GEN-LAST:event_btn_setProdukActionPerformed
 
+    private void tbl_dataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_dataMouseClicked
+        btn_print.setVisible(true);
+    }//GEN-LAST:event_tbl_dataMouseClicked
+
+    private void btn_printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_printActionPerformed
+        int selectedRow = tbl_data.getSelectedRow(); 
+    
+        if (selectedRow != -1) {
+            String idPenjualan = tbl_data.getValueAt(selectedRow, 0).toString();
+            servisReport.printStruk(idPenjualan);
+        }
+    }//GEN-LAST:event_btn_printActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_add;
@@ -894,6 +922,7 @@ public class FiturPenjualan extends javax.swing.JPanel {
     private javax.swing.JButton btn_closeDetail;
     private javax.swing.JButton btn_delete;
     private javax.swing.JButton btn_edit;
+    private javax.swing.JButton btn_print;
     private javax.swing.JButton btn_save;
     private javax.swing.JButton btn_setPelanggan;
     private javax.swing.JButton btn_setProduk;
@@ -954,6 +983,7 @@ public class FiturPenjualan extends javax.swing.JPanel {
 
     private void loadData() {
         getData((DefaultTableModel) tbl_data.getModel());
+        btn_print.setVisible(false);
         pn_detail.setVisible(false);
     }
     
@@ -1023,89 +1053,55 @@ public class FiturPenjualan extends javax.swing.JPanel {
     }
     
     private void actionButton() {
-        btn_setPelanggan.addActionListener(new ActionListener(){
+        btn_setPelanggan.addActionListener(e -> setPelanggan());
+        btn_setProduk.addActionListener(e -> setProduk());
+
+        tbl_data.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                setPelanggan();
-            }
-        });
-        
-        btn_setProduk.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setProduk();
-            }
-        });
-        
-        tbl_data.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
+            public void mouseClicked(MouseEvent e) {
                 pn_detail.setVisible(true);
-                
                 int row = tbl_data.getSelectedRow();
                 String id = tbl_data.getValueAt(row, 0).toString();
                 getDataDetail((DefaultTableModel) tbl_dataDetail.getModel(), id);
             }
         });
-        
-        tbl_dataSementara.getModel().addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                if (e.getType() == TableModelEvent.UPDATE) { 
-                    btn_delete.setVisible(true);
-                }
+
+        tbl_dataSementara.getModel().addTableModelListener(e -> {
+            if (e.getType() == TableModelEvent.UPDATE) {
+                btn_delete.setVisible(true);
             }
         });
-        
+
         tbl_dataSementara.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 dataTabelSementara();
             }
         });
-        
-        timer = new Timer(300, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String rfid = txt_rfidMember.getText().trim();
-                if (!rfid.isEmpty() && rfid.length() >= 10) {
-                    getRFIDMember(rfid);
-                    txt_rfidMember.setText(""); // reset setelah data ditampilkan
-                }
-            }
-        });
-        timer.setRepeats(false); // supaya hanya jalan sekali setelah berhenti ngetik
 
-        timer.setRepeats(false);
-        timer = new Timer(300, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String rfid = txt_rfidMember.getText().trim().replaceAll("[^\\d]", "");
-                if (!rfid.isEmpty() && rfid.length() >= 10) {
-                    getRFIDMember(rfid);
-                    txt_rfidMember.setText("");
-                }
+        timer = new Timer(300, e -> {
+            String rfid = txt_rfidMember.getText().trim().replaceAll("[^\\d]", "");
+            if (!rfid.isEmpty() && rfid.length() >= 10) {
+                getRFIDMember(rfid);
+                txt_rfidMember.setText("");
             }
         });
         timer.setRepeats(false);
 
-        txt_jumlah.addKeyListener(new KeyAdapter() {
+        txt_rfidMember.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    updateJumlah();
-                }
+            public void keyReleased(KeyEvent e) {
+                timer.restart();
             }
         });
-        
+
         for (KeyListener kl : txt_barcode.getKeyListeners()) {
             txt_barcode.removeKeyListener(kl);
         }
 
-        // Tambahkan KeyListener baru khusus untuk Enter
-        txt_barcode.addKeyListener(new java.awt.event.KeyAdapter() {
+        txt_barcode.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyPressed(java.awt.event.KeyEvent evt) {
+            public void keyPressed(KeyEvent evt) {
                 if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
                     getProduk();
                     evt.consume();
@@ -1113,58 +1109,25 @@ public class FiturPenjualan extends javax.swing.JPanel {
             }
         });
 
-        timer = new Timer(300, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String rfid = txt_rfidMember.getText().trim();
-                if (!rfid.isEmpty() && rfid.length() >= 10) {
-                    getRFIDMember(rfid);
-                    txt_rfidMember.setText(""); // reset setelah data ditampilkan
-                }
-            }
-        });
-        timer.setRepeats(false); // supaya hanya jalan sekali setelah berhenti ngetik
-
-        timer.setRepeats(false);
-        timer = new Timer(300, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String rfid = txt_rfidMember.getText().trim().replaceAll("[^\\d]", "");
-                if (!rfid.isEmpty() && rfid.length() >= 10) {
-                    getRFIDMember(rfid);
-                    txt_rfidMember.setText("");
-                }
-            }
-        });
-        timer.setRepeats(false);
-
         txt_jumlah.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    updateJumlah();
+                    if (cekStokProdukYangDipilih()) {
+                        updateJumlah();
+                    }
                 }
             }
         });
-    
-        
-        txt_jumlah.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    updateJumlah();
-                }
-            }
-        });
-        
+
         txt_bayar.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 formatBayarRupiah();
-                hitungKembalian(); 
+                hitungKembalian();
             }
         });
-    }     
+    }
     
     private void setupEventListener() {
         tbl_data.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1603,14 +1566,12 @@ public class FiturPenjualan extends javax.swing.JPanel {
                     // Default metode bayar adalah "Cash"
                     String metodeBayar = "Cash";
 
-                    // Cek apakah produk sudah ada di tabel sementara
                     String queryCek = "SELECT * FROM pn_sementara WHERE id_produk = ?";
                     PreparedStatement psCek = conn.prepareStatement(queryCek);
                     psCek.setString(1, idProduk);
                     ResultSet rsCek = psCek.executeQuery();
 
                     if (rsCek.next()) {
-                        // Jika produk sudah ada, update jumlahnya
                         int jumlahLama = rsCek.getInt("jumlah_beli");
                         String metodeBayarLama = rsCek.getString("metode_bayar");
 
@@ -1618,7 +1579,7 @@ public class FiturPenjualan extends javax.swing.JPanel {
 
                         // Jika metode bayar sebelumnya adalah Point, maka subtotal tetap sesuai aturan Point
                         if ("Point".equals(metodeBayarLama)) {
-                            subtotal = 0.0; // Tetap gratis jika sebelumnya pakai point
+                            subtotal = 0.0;
                             metodeBayar = "Point";
                         } else {
                             subtotal = harga * jumlah;
@@ -1634,7 +1595,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
                         psUpdate.executeUpdate();
                         psUpdate.close();
                     } else {
-                        // Jika produk belum ada, insert baru ke tabel sementara
                         String queryInsert = "INSERT INTO pn_sementara (id_produk, nama_produk, satuan, harga, jumlah_beli, subtotal, metode_bayar) " +
                                             "VALUES (?, ?, ?, ?, ?, ?, ?)";
                         PreparedStatement psInsert = conn.prepareStatement(queryInsert);
@@ -1678,7 +1638,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
                 String alamat = rs.getString("alamat");
                 String tglGabung = rs.getString("tanggal_bergabung");
 
-                // Format the message
                 StringBuilder message = new StringBuilder();
                 message.append("DATA MEMBERSHIP\n");
                 message.append("--------------------------------\n");
@@ -1690,7 +1649,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
 
                 txt_namaPelanggan.setText(namaPelanggan);
 
-                // Show appropriate message based on points
                 if (point >= 10) {
                     int option = JOptionPane.showConfirmDialog(
                         this,
@@ -1701,7 +1659,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
                     );
 
                     if (option == JOptionPane.YES_OPTION) {
-                        // PERBAIKAN: pass rfidMember sebagai parameter
                         getFreeRefillGalon(idPelanggan, point, rfidMember);
                         setEnableField();
                         
@@ -1751,7 +1708,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
 
     private void getFreeRefillGalon(String idPelanggan, int currentPoint, String rfidMember) {
         try {
-            // Query untuk mendapatkan data produk SL001 (Refill Galon)
             String queryProduk = "SELECT * FROM produk WHERE id_produk = 'SL001'";
             PreparedStatement psProduk = conn.prepareStatement(queryProduk);
             ResultSet rsProduk = psProduk.executeQuery();
@@ -1763,20 +1719,17 @@ public class FiturPenjualan extends javax.swing.JPanel {
                 String satuan = rsProduk.getString("satuan");
 
                 int jumlah = 1;
-                double subtotal = 0.0; // Gratis karena pakai point
-                String metodeBayar = "Point"; // Metode bayar menggunakan point
+                double subtotal = 0.0; 
+                String metodeBayar = "Point"; 
 
-                // Cek apakah produk SL001 sudah ada di tabel sementara
                 String queryCek = "SELECT * FROM pn_sementara WHERE id_produk = ?";
                 PreparedStatement psCek = conn.prepareStatement(queryCek);
                 psCek.setString(1, idProduk);
                 ResultSet rsCek = psCek.executeQuery();
 
                 if (rsCek.next()) {
-                    // Jika produk sudah ada, update jumlahnya (tetap gratis)
                     int jumlahLama = rsCek.getInt("jumlah_beli");
                     jumlah = jumlahLama + 1;
-                    // subtotal tetap 0 karena gratis
 
                     String queryUpdate = "UPDATE pn_sementara SET jumlah_beli = ?, subtotal = ?, metode_bayar = ? WHERE id_produk = ?";
                     PreparedStatement psUpdate = conn.prepareStatement(queryUpdate);
@@ -1787,7 +1740,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
                     psUpdate.executeUpdate();
                     psUpdate.close();
                 } else {
-                    // Jika produk belum ada, insert baru ke tabel sementara
                     String queryInsert = "INSERT INTO pn_sementara (id_produk, nama_produk, satuan, harga, jumlah_beli, subtotal, metode_bayar) " +
                                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement psInsert = conn.prepareStatement(queryInsert);
@@ -1805,7 +1757,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
                 rsCek.close();
                 psCek.close();
 
-                // Update point pelanggan (kurangi 10 point) - PERBAIKAN: gunakan rfidMember sebagai parameter
                 int newPoint = currentPoint - 10;
                 String queryUpdatePoint = "UPDATE pelanggan SET point = ? WHERE rfid_member = ?";
                 PreparedStatement psUpdatePoint = conn.prepareStatement(queryUpdatePoint);
@@ -1814,7 +1765,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
                 psUpdatePoint.executeUpdate();
                 psUpdatePoint.close();
 
-                // Refresh tampilan
                 loadDataSementara();
                 hitungTotal();
 
@@ -1851,7 +1801,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
                 return;
             }
 
-            // Query untuk mendapatkan data produk berdasarkan barcode
             String query = "SELECT * FROM produk WHERE barcode = ?";
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, barcode);
@@ -1859,7 +1808,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                // Ambil data produk dari hasil query
                 String idProduk = rs.getString("id_produk");
                 String namaProduk = rs.getString("nama_produk");
                 double harga = rs.getDouble("harga_jual");
@@ -1867,29 +1815,24 @@ public class FiturPenjualan extends javax.swing.JPanel {
                 String satuan = rs.getString("satuan");
                 String barcodeProduk = rs.getString("barcode");
 
-                // Default jumlah pembelian adalah 1
                 int jumlah = 1;
                 double subtotal = harga * jumlah;
 
-                // Default metode bayar adalah "Cash" 
                 String metodeBayar = "Cash";
 
-                // Cek apakah produk sudah ada di tabel sementara
                 String queryCek = "SELECT * FROM pn_sementara WHERE id_produk = ?";
                 PreparedStatement psCek = conn.prepareStatement(queryCek);
                 psCek.setString(1, idProduk);
                 ResultSet rsCek = psCek.executeQuery();
 
                 if (rsCek.next()) {
-                    // Jika produk sudah ada, update jumlahnya
                     int jumlahLama = rsCek.getInt("jumlah_beli");
                     String metodeBayarLama = rsCek.getString("metode_bayar");
 
                     jumlah = jumlahLama + 1;
 
-                    // Jika metode bayar sebelumnya adalah Point, maka subtotal tetap sesuai aturan Point
                     if ("Point".equals(metodeBayarLama)) {
-                        subtotal = 0.0; // Tetap gratis jika sebelumnya pakai point
+                        subtotal = 0.0; 
                         metodeBayar = "Point";
                     } else {
                         subtotal = harga * jumlah;
@@ -1905,7 +1848,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
                     psUpdate.executeUpdate();
                     psUpdate.close();
                 } else {
-                    // Jika produk belum ada, insert baru ke tabel sementara
                     String queryInsert = "INSERT INTO pn_sementara (id_produk, nama_produk, satuan, harga, jumlah_beli, subtotal, metode_bayar) " +
                                          "VALUES (?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement psInsert = conn.prepareStatement(queryInsert);
@@ -1999,7 +1941,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
             if (rs.next()) {
                 double total = rs.getDouble("total");
 
-                // Jika total 0 (semua item gratis dengan Point), set semua field pembayaran ke 0
                 if (total == 0.0) {
                     txt_subtotal.setText("Rp.0");
                     txt_total.setText("Rp.0");
@@ -2008,7 +1949,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
                     txt_bayar.setText("Rp.0");
                     txt_kembalian.setText("Rp.0");
                 } else {
-                    // Logika normal untuk transaksi berbayar
                     txt_subtotal.setText("Rp." + formatRupiah(total));
                     if (!txt_intDiskon.getText().trim().isEmpty()) {
                         hitungDiskon();
@@ -2115,14 +2055,12 @@ public class FiturPenjualan extends javax.swing.JPanel {
                 return;
             }
 
-            // Ambil data yang diperlukan
             String idProduk = rs.getString("id_produk");
             double harga = rs.getDouble("harga");
             double subtotalBaru = harga * jumlahBaru;
 
             checkPs.close();
 
-            // Langkah 2: Update jumlah_beli dan subtotal di pn_sementara
             String updateSql = "UPDATE pn_sementara SET jumlah_beli = ?, subtotal = ? WHERE id_produk = ?";
             PreparedStatement updatePs = conn.prepareStatement(updateSql);
             updatePs.setInt(1, jumlahBaru);
@@ -2132,11 +2070,9 @@ public class FiturPenjualan extends javax.swing.JPanel {
             int result = updatePs.executeUpdate();
 
             if (result > 0) {
-                // Update berhasil
-                loadDataSementara(); // Refresh tabel
-                hitungTotal(); // Hitung ulang total
+                loadDataSementara(); 
+                hitungTotal();
 
-                // Update tampilan field jumlah jika perlu
                 txt_jumlah.setText(String.valueOf(jumlahBaru));
 
                 JOptionPane.showMessageDialog(this, 
@@ -2170,6 +2106,190 @@ public class FiturPenjualan extends javax.swing.JPanel {
         }
     }
     
+    private void updateStokProdukDanAksesoris() {
+        try {
+            conn.setAutoCommit(false);
+
+            String updateStokSQL = 
+                "UPDATE produk p " +
+                "JOIN pn_sementara ps ON p.id_produk = ps.id_produk " +
+                "SET p.stok = CASE " +
+                "   WHEN p.id_produk = 'SL001' THEN p.stok - (ps.jumlah_beli * 19) " +
+                "   ELSE p.stok - ps.jumlah_beli " +
+                "END";
+
+            PreparedStatement stProduk = conn.prepareStatement(updateStokSQL);
+            stProduk.executeUpdate();
+
+            String sumGalonSQL = "SELECT SUM(jumlah_beli) AS total_galon FROM pn_sementara WHERE id_produk BETWEEN 'SL001' AND 'SL007'";
+            PreparedStatement sumSt = conn.prepareStatement(sumGalonSQL);
+            ResultSet rs = sumSt.executeQuery();
+
+            if (rs.next()) {
+                int totalGalon = rs.getInt("total_galon");
+                if (totalGalon > 0) {
+                    String updateTisuSQL = "UPDATE produk SET stok = stok - ? WHERE id_produk = 'SL008'";
+                    PreparedStatement stTisu = conn.prepareStatement(updateTisuSQL);
+                    stTisu.setInt(1, totalGalon);
+                    stTisu.executeUpdate();
+                }
+            }
+
+            String sumRefillSQL = "SELECT SUM(jumlah_beli) AS total_refill FROM pn_sementara WHERE id_produk = 'SL001'";
+            PreparedStatement sumRefillSt = conn.prepareStatement(sumRefillSQL);
+            ResultSet rsRefill = sumRefillSt.executeQuery();
+
+            if (rsRefill.next()) {
+                int totalRefill = rsRefill.getInt("total_refill");
+                if (totalRefill > 0) {
+                    String updateTutupSQL = "UPDATE produk SET stok = stok - ? WHERE id_produk = 'SL009'";
+                    PreparedStatement stTutup = conn.prepareStatement(updateTutupSQL);
+                    stTutup.setInt(1, totalRefill);
+                    stTutup.executeUpdate();
+                }
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE, null, e);
+            throw new RuntimeException("Error updating product stock: " + e.getMessage());
+        }
+    }
+
+    private boolean cekStokProdukYangDipilih() {
+        try {
+            String barcode = txt_barcode.getText().trim();
+            String jumlahStr = txt_jumlah.getText().trim();
+
+            if (barcode.isEmpty() || jumlahStr.isEmpty()) {
+                return true;
+            }
+
+            int jumlahBeli;
+            try {
+                jumlahBeli = Integer.parseInt(jumlahStr);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Jumlah harus berupa angka yang valid.", "Validasi Input", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+
+            if (jumlahBeli <= 0) {
+                JOptionPane.showMessageDialog(this, "Jumlah harus lebih dari 0.", "Validasi Input", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+
+            String cekProdukSQL = "SELECT id_produk, nama_produk, stok, satuan FROM produk WHERE barcode = ?";
+            PreparedStatement st = conn.prepareStatement(cekProdukSQL);
+            st.setString(1, barcode);
+            ResultSet rs = st.executeQuery();
+
+            if (!rs.next()) {
+                JOptionPane.showMessageDialog(this, "Produk dengan barcode " + barcode + " tidak ditemukan.", "Produk Tidak Ditemukan", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            String idProduk = rs.getString("id_produk");
+            String namaProduk = rs.getString("nama_produk");
+            int stokTersedia = rs.getInt("stok");
+            String satuan = rs.getString("satuan");
+
+            int stokDibutuhkan = "SL001".equals(idProduk) ? jumlahBeli * 19 : jumlahBeli;
+
+            int stokSudahDiambil = 0;
+            for (int i = 0; i < tbl_dataSementara.getRowCount(); i++) {
+                String idProdukKeranjang = tbl_dataSementara.getValueAt(i, 1).toString();
+                if (idProduk.equals(idProdukKeranjang)) {
+                    int jumlahBeliKeranjang = Integer.parseInt(tbl_dataSementara.getValueAt(i, 6).toString());
+                    stokSudahDiambil += "SL001".equals(idProduk) ? jumlahBeliKeranjang * 19 : jumlahBeliKeranjang;
+                }
+            }
+
+            int totalStokDibutuhkan = stokDibutuhkan + stokSudahDiambil;
+
+            if (totalStokDibutuhkan > stokTersedia) {
+                JOptionPane.showMessageDialog(this,
+                    "Stok tidak mencukupi untuk produk: " + namaProduk + "\n" +
+                    "Stok tersedia: " + stokTersedia + " " + satuan + "\n" +
+                    "Stok sudah di keranjang: " + stokSudahDiambil + " " + satuan + "\n" +
+                    "Stok akan ditambah: " + stokDibutuhkan + " " + satuan + "\n" +
+                    "Total stok dibutuhkan: " + totalStokDibutuhkan + " " + satuan,
+                    "Stok Tidak Mencukupi", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+
+            if (idProduk.matches("SL00[1-7]")) {
+                String cekStokTisuSQL = "SELECT stok FROM produk WHERE id_produk = 'SL008'";
+                PreparedStatement stTisu = conn.prepareStatement(cekStokTisuSQL);
+                ResultSet rsTisu = stTisu.executeQuery();
+
+                if (rsTisu.next()) {
+                    int stokTisu = rsTisu.getInt("stok");
+                    int tisuSudahDiambil = 0;
+                    for (int i = 0; i < tbl_dataSementara.getRowCount(); i++) {
+                        String idProdukKeranjang = tbl_dataSementara.getValueAt(i, 1).toString();
+                        if (idProdukKeranjang.matches("SL00[1-7]")) {
+                            tisuSudahDiambil += Integer.parseInt(tbl_dataSementara.getValueAt(i, 6).toString());
+                        }
+                    }
+                    int totalTisuDibutuhkan = jumlahBeli + tisuSudahDiambil;
+
+                    if (totalTisuDibutuhkan > stokTisu) {
+                        JOptionPane.showMessageDialog(this,
+                            "Stok tisu tidak mencukupi!\n" +
+                            "Stok tersedia: " + stokTisu + " pcs\n" +
+                            "Stok sudah di keranjang: " + tisuSudahDiambil + " pcs\n" +
+                            "Stok akan ditambah: " + jumlahBeli + " pcs\n" +
+                            "Total stok dibutuhkan: " + totalTisuDibutuhkan + " pcs",
+                            "Stok Tisu Tidak Mencukupi", JOptionPane.WARNING_MESSAGE);
+                        return false;
+                    }
+                }
+            }
+
+            if ("SL001".equals(idProduk)) {
+                String cekStokTutupSQL = "SELECT stok FROM produk WHERE id_produk = 'SL009'";
+                PreparedStatement stTutup = conn.prepareStatement(cekStokTutupSQL);
+                ResultSet rsTutup = stTutup.executeQuery();
+
+                if (rsTutup.next()) {
+                    int stokTutup = rsTutup.getInt("stok");
+                    int tutupSudahDiambil = 0;
+                    for (int i = 0; i < tbl_dataSementara.getRowCount(); i++) {
+                        String idProdukKeranjang = tbl_dataSementara.getValueAt(i, 1).toString();
+                        if ("SL001".equals(idProdukKeranjang)) {
+                            tutupSudahDiambil += Integer.parseInt(tbl_dataSementara.getValueAt(i, 6).toString());
+                        }
+                    }
+                    int totalTutupDibutuhkan = jumlahBeli + tutupSudahDiambil;
+
+                    if (totalTutupDibutuhkan > stokTutup) {
+                        JOptionPane.showMessageDialog(this,
+                            "Stok tutup galon tidak mencukupi!\n" +
+                            "Stok tersedia: " + stokTutup + " pcs\n" +
+                            "Stok sudah di keranjang: " + tutupSudahDiambil + " pcs\n" +
+                            "Stok akan ditambah: " + jumlahBeli + " pcs\n" +
+                            "Total stok dibutuhkan: " + totalTutupDibutuhkan + " pcs",
+                            "Stok Tutup Tidak Mencukupi", JOptionPane.WARNING_MESSAGE);
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+
+        } catch (SQLException e) {
+            Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat validasi stok: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+    
     private void insertDataSementara(String idProduk) {
         try {
             String sqlProduk = "SELECT * FROM produk WHERE id_produk = ?";
@@ -2199,151 +2319,6 @@ public class FiturPenjualan extends javax.swing.JPanel {
             txt_barcode.setText("");
         } catch (SQLException e) {
             Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE, null, e);
-        }
-    }
-    
-    private void insertData() {
-        String idPenjualan = txt_idPenjualan.getText().trim();
-        Date tanggal = txt_tanggal.getDate();
-
-        if (idPenjualan.isEmpty() || tanggal == null) { 
-            JOptionPane.showMessageDialog(this,
-                "ID penjualan dan tanggal harus diisi.",
-                "Validasi", JOptionPane.ERROR_MESSAGE);
-            if (idPenjualan.isEmpty()) {
-                txt_idPenjualan.requestFocus();
-            } else {
-                txt_tanggal.requestFocus();
-            }
-            return;
-        }
-
-        String namaPelanggan = txt_namaPelanggan.getText().trim();
-        if ((idPelangganTerpilih == null || idPelangganTerpilih.isEmpty()) && 
-            (namaPelanggan == null || namaPelanggan.isEmpty())) {
-            JOptionPane.showMessageDialog(this,
-                "Pilih pelanggan terlebih dahulu.",
-                "Validasi", JOptionPane.ERROR_MESSAGE);
-            txt_namaPelanggan.requestFocus();
-            return;
-        }
-
-        if ((idPelangganTerpilih == null || idPelangganTerpilih.isEmpty()) && 
-            namaPelanggan != null && !namaPelanggan.isEmpty()) {
-            idPelangganTerpilih = getIdPelangganByName(namaPelanggan);
-        }
-
-        if (tbl_dataSementara.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this,
-                "Tambahkan produk ke keranjang terlebih dahulu.",
-                "Validasi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        String totalHargaStr = txt_totalHarga.getText().replaceAll("[^0-9]", "");
-        String bayarStr = txt_bayar.getText().replaceAll("[^0-9]", "");
-
-        if (bayarStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                "Masukkan jumlah pembayaran.",
-                "Validasi", JOptionPane.ERROR_MESSAGE);
-            txt_bayar.requestFocus();
-            return;
-        }
-
-        int totalHarga = Integer.parseInt(totalHargaStr);
-        int bayar = Integer.parseInt(bayarStr);
-
-        if (bayar < totalHarga) {
-            JOptionPane.showMessageDialog(this,
-                "Jumlah pembayaran kurang dari total belanja.",
-                "Validasi", JOptionPane.ERROR_MESSAGE);
-            txt_bayar.requestFocus();
-            return;
-        }
-
-        String tgl = new SimpleDateFormat("yyyy-MM-dd").format(tanggal);
-        int totalBeli = 0;
-        for (int i = 0; i < tbl_dataSementara.getRowCount(); i++) {
-            totalBeli += Integer.parseInt(tbl_dataSementara.getValueAt(i, 6).toString()); // kolom ke-6 adalah jumlah_beli
-
-
-        }
-        int kembalian = bayar - totalHarga;
-
-        try {
-            if (checkIdPenjualan(idPenjualan)) {
-                JOptionPane.showMessageDialog(this,
-                    "ID Penjualan " + idPenjualan + " sudah ada dalam database.",
-                    "Validasi", JOptionPane.ERROR_MESSAGE);
-                txt_idPenjualan.requestFocus();
-                return;
-            }
-
-            conn.setAutoCommit(false);
-
-            String sql = "INSERT INTO penjualan "
-                    + "(id_penjualan, total_beli, total_harga, "
-                    + "tanggal_transaksi, id_pelanggan, id_user, "
-                    + "bayar, diskon, kembali) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement st = conn.prepareStatement(sql)) {
-                st.setString(1, idPenjualan);
-                st.setInt(2, totalBeli);
-                st.setInt(3, totalHarga);
-                st.setString(4, tgl);
-                st.setString(5, idPelangganTerpilih);
-                st.setString(6, userID);
-                st.setInt(7, bayar);
-
-                String diskonText = txt_diskon.getText().replace("Rp.", "").replace(".", "");
-                int diskonValue = diskonText.isEmpty() ? 0 : Integer.parseInt(diskonText);
-                st.setInt(8, diskonValue);
-                st.setInt(9, kembalian);
-
-                int result = st.executeUpdate();
-
-                if (result > 0) {
-                    insertDataDetail(idPenjualan);
-                    updateStokProduk();
-
-                    conn.commit();
-
-                    resetForm();
-                    resetFormProduk();
-                    resetPembayaran();
-                    loadData();
-
-                    JOptionPane.showMessageDialog(this,
-                            "Data Berhasil Ditambahkan.", 
-                            "Message", JOptionPane.INFORMATION_MESSAGE);
-
-                    // Cetak struk jika diperlukan
-                    // cetakStruk(idPenjualan);
-                } else {
-                    throw new SQLException("Gagal menyimpan data penjualan");
-                }
-            }
-        } catch (SQLException ex) {
-            try {
-                conn.rollback();
-            } catch(SQLException e) {
-                Logger.getLogger(FiturPenjualan.class.getName())
-                        .log(Level.SEVERE, null, e);
-            }
-
-            Logger.getLogger(FiturPenjualan.class.getName())
-                    .log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this,
-                    "Error: " + ex.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            try {
-                conn.setAutoCommit(true);
-            } catch (SQLException ex) {
-                Logger.getLogger(FiturPenjualan.class.getName())
-                        .log(Level.SEVERE, null, ex);
-            }
         }
     }
 
@@ -2384,20 +2359,128 @@ public class FiturPenjualan extends javax.swing.JPanel {
         } catch (Exception e) {
             Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE, "Error refreshing detail view", e);
         }
-    }
+    } 
     
-    private void updateStokProduk() {
-        try {
-            String updateSQL = "UPDATE produk p " +
-                              "JOIN pn_sementara ps ON p.id_produk = ps.id_produk " +
-                              "SET p.stok = p.stok - ps.jumlah_beli";
-            PreparedStatement st = conn.prepareStatement(updateSQL);
-            st.executeUpdate();
-        } catch (SQLException e) {
-            Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE, null, e);
-            throw new RuntimeException("Error updating product stock: " + e.getMessage());
+    private void insertData() {
+        String idPenjualan = txt_idPenjualan.getText().trim();
+        Date tanggal = txt_tanggal.getDate();
+
+        if (idPenjualan.isEmpty() || tanggal == null) { 
+            JOptionPane.showMessageDialog(this, "ID penjualan dan tanggal harus diisi.", "Validasi", JOptionPane.ERROR_MESSAGE);
+            if (idPenjualan.isEmpty()) {
+                txt_idPenjualan.requestFocus();
+            } else {
+                txt_tanggal.requestFocus();
+            }
+            return;
         }
-    }    
+
+        String namaPelanggan = txt_namaPelanggan.getText().trim();
+        if ((idPelangganTerpilih == null || idPelangganTerpilih.isEmpty()) && 
+            (namaPelanggan == null || namaPelanggan.isEmpty())) {
+            JOptionPane.showMessageDialog(this, "Pilih pelanggan terlebih dahulu.", "Validasi", JOptionPane.ERROR_MESSAGE);
+            txt_namaPelanggan.requestFocus();
+            return;
+        }
+
+        if ((idPelangganTerpilih == null || idPelangganTerpilih.isEmpty()) && 
+            namaPelanggan != null && !namaPelanggan.isEmpty()) {
+            idPelangganTerpilih = getIdPelangganByName(namaPelanggan);
+        }
+
+        if (tbl_dataSementara.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Tambahkan produk ke keranjang terlebih dahulu.", "Validasi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String totalHargaStr = txt_totalHarga.getText().replaceAll("[^0-9]", "");
+        String bayarStr = txt_bayar.getText().replaceAll("[^0-9]", "");
+
+        if (bayarStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Masukkan jumlah pembayaran.", "Validasi", JOptionPane.ERROR_MESSAGE);
+            txt_bayar.requestFocus();
+            return;
+        }
+
+        int totalHarga = Integer.parseInt(totalHargaStr);
+        int bayar = Integer.parseInt(bayarStr);
+
+        if (bayar < totalHarga) {
+            JOptionPane.showMessageDialog(this, "Jumlah pembayaran kurang dari total belanja.", "Validasi", JOptionPane.ERROR_MESSAGE);
+            txt_bayar.requestFocus();
+            return;
+        }
+
+        String tgl = new SimpleDateFormat("yyyy-MM-dd").format(tanggal);
+        int totalBeli = 0;
+        for (int i = 0; i < tbl_dataSementara.getRowCount(); i++) {
+            totalBeli += Integer.parseInt(tbl_dataSementara.getValueAt(i, 6).toString());
+        }
+        int kembalian = bayar - totalHarga;
+
+        try {
+            if (checkIdPenjualan(idPenjualan)) {
+                JOptionPane.showMessageDialog(this, "ID Penjualan " + idPenjualan + " sudah ada dalam database.", "Validasi", JOptionPane.ERROR_MESSAGE);
+                txt_idPenjualan.requestFocus();
+                return;
+            }
+
+            conn.setAutoCommit(false);
+
+            String sql = "INSERT INTO penjualan " +
+                    "(id_penjualan, total_beli, total_harga, " +
+                    "tanggal_transaksi, id_pelanggan, id_user, " +
+                    "bayar, diskon, kembali) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement st = conn.prepareStatement(sql)) {
+                st.setString(1, idPenjualan);
+                st.setInt(2, totalBeli);
+                st.setInt(3, totalHarga);
+                st.setString(4, tgl);
+                st.setString(5, idPelangganTerpilih);
+                st.setString(6, userID);
+                st.setInt(7, bayar);
+
+                String diskonText = txt_diskon.getText().replace("Rp.", "").replace(".", "");
+                int diskonValue = diskonText.isEmpty() ? 0 : Integer.parseInt(diskonText);
+                st.setInt(8, diskonValue);
+                st.setInt(9, kembalian);
+
+                int result = st.executeUpdate();
+
+                if (result > 0) {
+                    updateStokProdukDanAksesoris();
+                    insertDataDetail(idPenjualan); 
+                    conn.commit();
+
+                    
+                    resetForm();
+                    resetFormProduk();
+                    resetPembayaran();
+                    loadData();
+
+                    JOptionPane.showMessageDialog(this, "Data Berhasil Ditambahkan", "Message", JOptionPane.INFORMATION_MESSAGE);
+                    servisReport.printStruk(idPenjualan);
+                } else {
+                    throw new SQLException("Gagal menyimpan data penjualan");
+                }
+            }
+        } catch (SQLException ex) {
+            try {
+                conn.rollback();
+            } catch(SQLException e) {
+                Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE, null, e);
+            }
+            Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 
     private void deleteDataSementara() {
         int row = tbl_dataSementara.getSelectedRow();
@@ -2432,78 +2515,45 @@ public class FiturPenjualan extends javax.swing.JPanel {
 
     private void searchData() {
         String kataKunci = txt_search.getText();
-        
+
         DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
         model.setRowCount(0);
-        
+
         try {
-            String sql = "SELECT penjualan.id_penjualan, penjualan.total_beli, penjualan.total_harga, penjualan.tanggal_transaksi,\n" +
-                         "pelanggan.nama_pelanggan, user.nama\n" +
-                         "FROM penjualan\n" +
-                         "INNER JOIN pelanggan ON pelanggan.id_pelanggan = penjualan.id_pelanggan\n" +
-                         "INNER JOIN user ON user.id_user = penjualan.id_user\n" +
-                         "WHERE penjualan.id_penjualan LIKE ? OR pelanggan.nama_pelanggan LIKE ?";
-            
-            try (PreparedStatement st = conn.prepareStatement(sql)){
+            String sql = "SELECT p.id_penjualan, p.tanggal_transaksi, "
+                       + "COALESCE(SUM(dp.jumlah), 0) AS total_beli, "
+                       + "p.total_harga, p.bayar, p.diskon, p.kembali, "
+                       + "c.nama_pelanggan, u.nama AS nama_kasir "
+                       + "FROM penjualan p "
+                       + "JOIN pelanggan c ON c.id_pelanggan = p.id_pelanggan "
+                       + "JOIN user u ON u.id_user = p.id_user "
+                       + "JOIN detail_penjualan dp ON dp.id_penjualan = p.id_penjualan "
+                       + "WHERE p.id_penjualan LIKE ? OR c.nama_pelanggan LIKE ? "
+                       + "GROUP BY p.id_penjualan, p.tanggal_transaksi, p.total_harga, "
+                       + "p.bayar, p.diskon, p.kembali, c.nama_pelanggan, u.nama "
+                       + "ORDER BY p.id_penjualan";
+
+            try (PreparedStatement st = conn.prepareStatement(sql)) {
                 st.setString(1, "%" + kataKunci + "%");
                 st.setString(2, "%" + kataKunci + "%");
                 ResultSet rs = st.executeQuery();
-                
+
                 while (rs.next()) {
-                    String idPenjualan         = rs.getString("id_penjualan");
-                    int totalBeli              = rs.getInt("total_beli");
-                    int totalHarga             = rs.getInt("total_harga");
-                    String tanggalTransaksi    = rs.getString("tanggal_transaksi");
-                    String namaPelanggan       = rs.getString("nama_pelanggan");
-                    String namaKasir           = rs.getString("nama");
-                    
-                    Object[] rowData = {idPenjualan, totalBeli, totalHarga, tanggalTransaksi, namaPelanggan, namaKasir};
-                    model.addRow(rowData);
+                    model.addRow(new Object[]{
+                        rs.getString("id_penjualan"),
+                        rs.getDate("tanggal_transaksi"),
+                        rs.getInt("total_beli"),
+                        "Rp." + formatRupiah(rs.getInt("total_harga")),
+                        "Rp." + formatRupiah(rs.getInt("bayar")),
+                        "Rp." + formatRupiah(rs.getInt("diskon")),
+                        "Rp." + formatRupiah(rs.getInt("kembali")),
+                        rs.getString("nama_pelanggan"),
+                        rs.getString("nama_kasir")
+                    });
                 }
             }
         } catch (SQLException e) {
-            Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE,null,e);
-        }
-    }
-    
-    private void updateStokTisuDanTutup() {
-        String sumSql = "SELECT SUM(jumlah_beli) AS total_beli " +
-                        "FROM pn_sementara " +
-                        "WHERE id_produk BETWEEN 'SL001' AND 'SL007'";
-
-        try (PreparedStatement sumSt = conn.prepareStatement(sumSql);
-             ResultSet rs = sumSt.executeQuery()) {
-
-            if (rs.next()) {
-                int totalBeli = rs.getInt("total_beli");
-
-                // Jika ada pembelian galon, update stok tisu dan tutup
-                if (totalBeli > 0) {
-                    String updateSql = "UPDATE produk " +
-                                       "SET stok = stok - ? " +
-                                       "WHERE id_produk IN ('SL008', 'SL009') " +
-                                       "AND stok >= ?";
-
-                    try (PreparedStatement updateSt = conn.prepareStatement(updateSql)) {
-                        updateSt.setInt(1, totalBeli); // Kurangi stok sesuai jumlah pembelian
-                        updateSt.setInt(2, totalBeli); // Pastikan stok mencukupi
-
-                        int rowsAffected = updateSt.executeUpdate();
-                        if (rowsAffected == 0) {
-                            JOptionPane.showMessageDialog(this,
-                                "Stok tisu atau tutup galon tidak mencukupi!",
-                                "Peringatan",
-                                JOptionPane.WARNING_MESSAGE);
-                        }
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE, "Error saat mengupdate stok tisu dan tutup", e);
-            JOptionPane.showMessageDialog(this,
-                "Terjadi kesalahan saat mengupdate stok tisu dan tutup",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE, null, e);
         }
     }
     
@@ -2512,6 +2562,7 @@ public class FiturPenjualan extends javax.swing.JPanel {
         Color iconColor = Color.WHITE;  
 
         btn_add.setIcon(createSVGIcon("icons/add.svg", iconSize, iconColor));
+        btn_print.setIcon(createSVGIcon("icons/print.svg", iconSize, iconColor));
         btn_delete.setIcon(createSVGIcon("icons/delete.svg", iconSize, iconColor));
         btn_cancel.setIcon(createSVGIcon("icons/cancel.svg", iconSize, iconColor));
         btn_edit.setIcon(createSVGIcon("icons/edit.svg", iconSize, iconColor));

@@ -34,6 +34,7 @@ public class FiturKeuangan extends javax.swing.JPanel {
         this.userID = userID;
         setupCustomTableStyle();
         setTabelModel();
+        setButtonIcons();
         loadData();
 
         txt_search.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Pencarian");
@@ -56,6 +57,9 @@ public class FiturKeuangan extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_data = new javax.swing.JTable();
         txt_search = new javax.swing.JTextField();
+        cb_filter = new javax.swing.JComboBox<>();
+        btn_pdf = new javax.swing.JButton();
+        btn_excel = new javax.swing.JButton();
 
         setLayout(new java.awt.CardLayout());
 
@@ -123,6 +127,20 @@ public class FiturKeuangan extends javax.swing.JPanel {
             }
         });
 
+        cb_filter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih Filter", "Harian", "Mingguan", "Bulanan" }));
+
+        btn_pdf.setBackground(new java.awt.Color(255, 0, 0));
+        btn_pdf.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        btn_pdf.setForeground(new java.awt.Color(255, 255, 255));
+        btn_pdf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icon_update.png"))); // NOI18N
+        btn_pdf.setText("PDF");
+
+        btn_excel.setBackground(new java.awt.Color(51, 204, 0));
+        btn_excel.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        btn_excel.setForeground(new java.awt.Color(255, 255, 255));
+        btn_excel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icon_update.png"))); // NOI18N
+        btn_excel.setText("EXCEL");
+
         javax.swing.GroupLayout panelViewLayout = new javax.swing.GroupLayout(panelView);
         panelView.setLayout(panelViewLayout);
         panelViewLayout.setHorizontalGroup(
@@ -138,7 +156,14 @@ public class FiturKeuangan extends javax.swing.JPanel {
                             .addComponent(lb_keuangan)
                             .addGap(7, 7, 7)
                             .addComponent(jLabel1))
-                        .addComponent(txt_search)))
+                        .addGroup(panelViewLayout.createSequentialGroup()
+                            .addComponent(cb_filter, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btn_pdf, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btn_excel)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(10, 10, 10))
         );
         panelViewLayout.setVerticalGroup(
@@ -153,10 +178,15 @@ public class FiturKeuangan extends javax.swing.JPanel {
                         .addComponent(lb_keuangan)))
                 .addGap(10, 10, 10)
                 .addComponent(jLabel4)
+                .addGap(9, 9, 9)
+                .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_pdf, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cb_filter, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_excel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_search))
                 .addGap(10, 10, 10)
-                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(11, 11, 11)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                 .addGap(10, 10, 10))
         );
 
@@ -182,6 +212,9 @@ public class FiturKeuangan extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_excel;
+    private javax.swing.JButton btn_pdf;
+    private javax.swing.JComboBox<String> cb_filter;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
@@ -360,6 +393,20 @@ public class FiturKeuangan extends javax.swing.JPanel {
         } catch (SQLException e) {
             Logger.getLogger(FiturKeuangan.class.getName()).log(Level.SEVERE, null, e);
         }
+    }
+    
+    private void setButtonIcons() {
+        int iconSize = 18;  
+        Color iconColor = Color.WHITE;  
+
+        btn_pdf.setIcon(createSVGIcon("icons/pdf.svg", iconSize, iconColor));
+        btn_excel.setIcon(createSVGIcon("icons/excel.svg", iconSize, iconColor));
+    }
+
+    private FlatSVGIcon createSVGIcon(String path, int size, Color color) {
+        FlatSVGIcon icon = new FlatSVGIcon(path).derive(size, size);
+        icon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> color));
+        return icon;
     }
 
 }

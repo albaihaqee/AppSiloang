@@ -40,7 +40,16 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JTable;
+import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.RingPlot;
 import org.jfree.chart.ui.RectangleEdge;
@@ -56,6 +65,12 @@ public class FiturDashboard extends javax.swing.JPanel {
         tampilDashboard();
         updateStockChart();
         updateChart();
+        setTabelModel();
+        setupCustomTableStyle();
+        setWhiteSidebarIcons();
+        
+        DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
+        getDataDashboard(model);
         
         FlatSVGIcon dashboardIcon = new FlatSVGIcon("icons/dashboard.svg").derive(15, 15);
         dashboardIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> new Color(17, 97, 171)));
@@ -102,7 +117,7 @@ public class FiturDashboard extends javax.swing.JPanel {
         pn_ringchart = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tbl_data = new javax.swing.JTable();
 
         jLabel3.setText("jLabel3");
 
@@ -406,24 +421,30 @@ public class FiturDashboard extends javax.swing.JPanel {
         );
         pn_ringchartLayout.setVerticalGroup(
             pn_ringchartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 204, Short.MAX_VALUE)
+            .addGap(0, 226, Short.MAX_VALUE)
         );
 
         jLabel4.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel4.setText("Transaksi Terbaru");
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_data.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(tbl_data);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -484,8 +505,8 @@ public class FiturDashboard extends javax.swing.JPanel {
                     .addComponent(pn_chart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(10, 10, 10)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10))
         );
 
@@ -523,7 +544,6 @@ public class FiturDashboard extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JLabel lb_dashboard;
     private javax.swing.JLabel lb_jumlahPelanggan;
     private javax.swing.JLabel lb_jumlahProduk;
@@ -531,6 +551,7 @@ public class FiturDashboard extends javax.swing.JPanel {
     private javax.swing.JLabel lb_totalTransaksi;
     private javax.swing.JPanel pn_chart;
     private javax.swing.JPanel pn_ringchart;
+    private javax.swing.JTable tbl_data;
     // End of variables declaration//GEN-END:variables
 
     private void tampilDashboard() {
@@ -583,39 +604,36 @@ public class FiturDashboard extends javax.swing.JPanel {
         }
     }
 
- private static final String[] BULAN_INDONESIA = {
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-};
+    private static final String[] BULAN_INDONESIA = {
+       "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+       "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    };
 
-private DefaultCategoryDataset createDataset() {
-    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-    try {
-        String query = "SELECT MONTH(tanggal_transaksi) AS bulan, COUNT(*) AS jumlah_penjualan "
-                + "FROM penjualan WHERE YEAR(tanggal_transaksi) = YEAR(CURDATE()) "
-                + "GROUP BY MONTH(tanggal_transaksi) "
-                + "ORDER BY bulan";
+    private DefaultCategoryDataset createDataset() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        try {
+            String query = "SELECT MONTH(tanggal_transaksi) AS bulan, COUNT(*) AS jumlah_penjualan "
+                    + "FROM penjualan WHERE YEAR(tanggal_transaksi) = YEAR(CURDATE()) "
+                    + "GROUP BY MONTH(tanggal_transaksi) "
+                    + "ORDER BY bulan";
 
-        PreparedStatement pst = conn.prepareStatement(query);
-        ResultSet rst = pst.executeQuery();
+            PreparedStatement pst = conn.prepareStatement(query);
+            ResultSet rst = pst.executeQuery();
 
-        while (rst.next()) {
-            int bulan = rst.getInt("bulan");
-            String namaBulan = BULAN_INDONESIA[bulan - 1]; // konversi angka ke nama bulan Indonesia
-            dataset.addValue(rst.getInt("jumlah_penjualan"), "Penjualan", namaBulan);
+            while (rst.next()) {
+                int bulan = rst.getInt("bulan");
+                String namaBulan = BULAN_INDONESIA[bulan - 1]; // konversi angka ke nama bulan Indonesia
+                dataset.addValue(rst.getInt("jumlah_penjualan"), "Penjualan", namaBulan);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error saat mengambil data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Error saat mengambil data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        return dataset;
     }
-    return dataset;
-}
 
-
-    // 🔹 MEMBUAT GRAFIK DENGAN GRADIENT AREA YANG RAPAT & SMOOTH
- private JFreeChart createChart(CategoryDataset dataset) {
-        // 1. Buat Line Chart dasar dengan tampilan yang lebih premium
+    private JFreeChart createChart(CategoryDataset dataset) {
         JFreeChart chart = ChartFactory.createLineChart(
-                "Statistik Penjualan Bulanan", // Judul grafik
+                "Statistik Penjualan Tahun 2025", // Judul grafik
                 "Bulan", // Label sumbu X
                 "Jumlah Transaksi", // Label sumbu Y
                 dataset,
@@ -623,26 +641,21 @@ private DefaultCategoryDataset createDataset() {
                 false, true, false
         );
 
-        // 2. Anti-aliasing & latar belakang dengan gradien premium
         chart.setAntiAlias(true);
         chart.setTextAntiAlias(true);
         chart.setBorderVisible(false);
 
-        // Background gradien dengan efek mewah
         GradientPaint chartBgGradient = new GradientPaint(
                 0, 0, new Color(252, 252, 255),
                 0, getHeight(), new Color(248, 250, 255)
         );
         chart.setBackgroundPaint(chartBgGradient);
 
-        // Title panel dengan efek bayangan
         chart.getTitle().setPaint(new Color(40, 40, 80));
         chart.getTitle().setMargin(new RectangleInsets(12, 0, 15, 0));
 
-        // 3. Kustomisasi Plot dengan efek tiga dimensi 
         CategoryPlot plot = chart.getCategoryPlot();
 
-        // Background gradien dengan warna yang lebih modern
         GradientPaint plotBgGradient = new GradientPaint(
                 0, 0, new Color(248, 250, 255),
                 0, getHeight(), new Color(245, 248, 255)
@@ -978,8 +991,9 @@ private DefaultCategoryDataset createDataset() {
         }
         return dataset;
     }
+    
     private JFreeChart createRingChart(DefaultPieDataset dataset) {
-         JFreeChart chart = ChartFactory.createRingChart(
+        JFreeChart chart = ChartFactory.createRingChart(
             "Volume Stok Air", // Judul
             dataset,
             true,  // legenda
@@ -1044,6 +1058,7 @@ private DefaultCategoryDataset createDataset() {
 
         return chart;
     }
+    
     private void updateStockChart() {
         DefaultPieDataset dataset = createStockDataset();
         JFreeChart chart = createRingChart(dataset);
@@ -1056,17 +1071,129 @@ private DefaultCategoryDataset createDataset() {
         pn_ringchart.revalidate();
         pn_ringchart.repaint();
     }
-
+    
     public class AnimatedBarRenderer extends BarRenderer {
-
         private double fraction = 0.0;
-
         public void setFraction(double fraction) {
             this.fraction = fraction;
         }
+    }
+    
+    private void setupCustomTableStyle() {
+        try {
+            Color headerColor = new Color(17, 97, 171);
+            Color selectionColor = new Color(200, 200, 200);
 
-        private void setWhiteSidebarIcons() {
-            int iconSize = 35; // Ukuran ikon 40x40 piksel
+            UIManager.put("TableHeader.background", headerColor);
+            UIManager.put("TableHeader.foreground", Color.WHITE);
+            UIManager.put("Table.selectionBackground", selectionColor);
+            UIManager.put("Table.selectionForeground", Color.BLACK); // Text hitam untuk kontras dengan background abu-abu
+            UIManager.put("Table.alternateRowColor", new Color(240, 240, 240));
+
+            if (tbl_data != null) {
+                tbl_data.getTableHeader().setBackground(headerColor);
+                tbl_data.getTableHeader().setForeground(Color.WHITE);
+                tbl_data.setFocusable(false);
+                tbl_data.setRowSelectionAllowed(true);
+                tbl_data.setColumnSelectionAllowed(false);
+                tbl_data.setRowHeight(30);
+                tbl_data.setShowGrid(false);
+                tbl_data.setShowHorizontalLines(false);
+                tbl_data.setShowVerticalLines(false);
+                tbl_data.setIntercellSpacing(new Dimension(0, 0));
+
+                tbl_data.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+                    @Override
+                    public Component getTableCellRendererComponent(JTable table, Object value, 
+                            boolean isSelected, boolean hasFocus, int row, int column) {
+                        Component comp = super.getTableCellRendererComponent(table, value, 
+                                isSelected, false, row, column);
+
+                        if (isSelected) {
+                            comp.setBackground(selectionColor);
+                            comp.setForeground(Color.BLACK); // Text hitam untuk kontras
+                        } else {
+                            if (row % 2 == 0) {
+                                comp.setBackground(Color.WHITE);
+                            } else {
+                                comp.setBackground(new Color(240, 240, 240));
+                            }
+                            comp.setForeground(Color.BLACK);
+                        }
+
+                        ((JComponent) comp).setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
+                        return comp;
+                    }
+                });
+
+                tbl_data.repaint();
+            }
+        } catch (Exception e) {
+            System.err.println("Error saat mengatur custom style tabel: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private void setTabelModel() {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("ID Penjualan");
+        model.addColumn("Tanggal Transaksi");
+        model.addColumn("Total Beli");
+        model.addColumn("Total Harga");
+        model.addColumn("Bayar");
+        model.addColumn("Diskon");
+        model.addColumn("Kembali");
+        model.addColumn("Nama Pelanggan");
+        model.addColumn("Nama Kasir");
+
+        tbl_data.setModel(model); 
+    }
+    
+    private void getDataDashboard(DefaultTableModel model) {
+        model.setRowCount(0);
+
+        String sql = "SELECT p.id_penjualan, p.tanggal_transaksi, "
+                   + "COALESCE(SUM(dp.jumlah), 0) AS total_beli, "
+                   + "p.total_harga, p.bayar, p.diskon, p.kembali, "
+                   + "c.nama_pelanggan, u.nama AS nama_kasir "
+                   + "FROM penjualan p "
+                   + "JOIN pelanggan c ON c.id_pelanggan = p.id_pelanggan "
+                   + "JOIN user u ON u.id_user = p.id_user "
+                   + "JOIN detail_penjualan dp ON dp.id_penjualan = p.id_penjualan "
+                   + "GROUP BY p.id_penjualan, p.tanggal_transaksi, p.total_harga, "
+                   + "p.bayar, p.diskon, p.kembali, c.nama_pelanggan, u.nama "
+                   + "ORDER BY p.id_penjualan DESC "
+                   + "LIMIT 10";
+
+        try (PreparedStatement st = conn.prepareStatement(sql);
+             ResultSet rs = st.executeQuery()) {
+
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getString("id_penjualan"),
+                    rs.getDate("tanggal_transaksi"),
+                    rs.getInt("total_beli"),
+                    "Rp." + formatRupiah(rs.getInt("total_harga")),
+                    "Rp." + formatRupiah(rs.getInt("bayar")),
+                    "Rp." + formatRupiah(rs.getInt("diskon")),
+                    "Rp." + formatRupiah(rs.getInt("kembali")),
+                    rs.getString("nama_pelanggan"),
+                    rs.getString("nama_kasir")
+                });
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(FiturDashboard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private String formatRupiah(double nominal) {
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        return formatter.format(nominal).replace(",", ".");
+    }
+
+    private void setWhiteSidebarIcons() {
+        int iconSize = 35; // Ukuran ikon 40x40 piksel
 
             FlatSVGIcon jmlProdukIcon = new FlatSVGIcon("icons/jmlProduk.svg");
             jmlProdukIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.WHITE));
@@ -1083,7 +1210,5 @@ private DefaultCategoryDataset createDataset() {
             FlatSVGIcon totIncome = new FlatSVGIcon("icons/totalIncome.svg");
             totIncome.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.WHITE));
             jLabel7.setIcon(totIncome.derive(iconSize, iconSize));
-        }
-
     }
 }

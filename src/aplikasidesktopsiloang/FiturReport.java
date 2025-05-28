@@ -11,6 +11,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.swing.JRViewer;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class FiturReport implements ServiceReport {
     
@@ -53,6 +54,23 @@ public class FiturReport implements ServiceReport {
             
             JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn);
             JasperPrintManager.printReport(print, true);
+        } catch (Exception e) {
+            JOptionPane.showConfirmDialog(null, e.getMessage());
+        }
+    }
+
+    @Override
+    public void printStruk(String id) {
+        try {
+            String reportPath = "D:\\PROJECT CODING\\aplikasiDesktopSiloang\\src\\report\\StrukPenjualan.jasper";
+            
+            HashMap<String, Object> parameters = new HashMap<>();
+            parameters.put("id_penjualan", id);
+            
+            JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, conn);
+            JasperViewer viewer = new JasperViewer(print, false);
+            viewer.setExtendedState(JasperViewer.MAXIMIZED_BOTH);
+            viewer.setVisible(true);
         } catch (Exception e) {
             JOptionPane.showConfirmDialog(null, e.getMessage());
         }

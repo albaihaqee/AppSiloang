@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CetakBarcode" language="groovy" pageWidth="226" pageHeight="842" columnWidth="196" leftMargin="15" rightMargin="15" topMargin="15" bottomMargin="15" isIgnorePagination="true" uuid="2c4c7b74-b34d-4404-bd28-6fa01b6a1ed5">
-	<property name="ireport.zoom" value="2.5937424601000028"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CetakBarcode" language="groovy" pageWidth="226" pageHeight="842" columnWidth="206" leftMargin="5" rightMargin="15" topMargin="15" bottomMargin="15" isIgnorePagination="true" uuid="2c4c7b74-b34d-4404-bd28-6fa01b6a1ed5">
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="id_penjualan" class="java.lang.String">
@@ -10,6 +10,7 @@
 		<![CDATA[SELECT 
     penjualan.id_penjualan,
     pelanggan.nama_pelanggan,
+    pelanggan.alamat,
     penjualan.tanggal_transaksi,
     user.nama,
     produk.nama_produk,
@@ -33,6 +34,9 @@ WHERE detail_penjualan.id_penjualan = $P{id_penjualan}]]>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="nama_pelanggan" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="alamat" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="tanggal_transaksi" class="java.sql.Date">
@@ -113,20 +117,13 @@ WHERE detail_penjualan.id_penjualan = $P{id_penjualan}]]>
 		</band>
 	</title>
 	<columnHeader>
-		<band height="61" splitType="Stretch">
+		<band height="71" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="90" height="15" uuid="481cc50e-5b04-4b17-b83e-b22b85ebb19c"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("yyyy-MM-dd").format($F{tanggal_transaksi})]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="15" width="90" height="15" uuid="e63009a6-8d69-4895-98e5-7c4e82555daa"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Consolas" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("HH:mm:ss").format($F{tanggal_transaksi})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["" + $F{tanggal_transaksi}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="100" y="0" width="96" height="15" uuid="1706ae48-b464-43e5-800e-848cf653654f"/>
@@ -143,22 +140,36 @@ WHERE detail_penjualan.id_penjualan = $P{id_penjualan}]]>
 				<textFieldExpression><![CDATA[$F{nama_pelanggan}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="35" width="90" height="15" uuid="e641e4a4-82b2-4750-8f3f-1dae6a09b901"/>
+				<reportElement x="0" y="45" width="90" height="15" uuid="e641e4a4-82b2-4750-8f3f-1dae6a09b901"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{id_penjualan}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="55" width="196" height="1" uuid="3c880ce6-6df7-488a-b558-1cc160f30373"/>
+				<reportElement x="0" y="65" width="196" height="1" uuid="3c880ce6-6df7-488a-b558-1cc160f30373"/>
 				<graphicElement>
 					<pen lineStyle="Dotted"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement x="0" y="30" width="196" height="15" uuid="73894145-877f-4da9-8c01-5c3913741126"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{alamat}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="15" width="90" height="15" uuid="f42c9cfb-7eba-491d-b045-594e7fc3ee75"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Consolas" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tanggal_transaksi}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="35" splitType="Stretch">
+		<band height="30" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="90" height="15" uuid="36856454-6dc5-46af-b182-cc6e87a50fd3"/>
 				<textElement verticalAlignment="Middle">
@@ -178,122 +189,115 @@ WHERE detail_penjualan.id_penjualan = $P{id_penjualan}]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Rp." + $F{subtotal}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<summary>
-		<band height="179" splitType="Stretch">
+		<band height="168" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="12" width="90" height="15" uuid="eadc17eb-4b6a-4e90-9797-8340c55b4619"/>
+				<reportElement x="0" y="11" width="90" height="15" uuid="eadc17eb-4b6a-4e90-9797-8340c55b4619"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Total QTY : " + $F{total_beli}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="6" width="196" height="1" uuid="1accf1f9-f3da-4d69-8bd8-95c43b45593d"/>
+				<reportElement x="0" y="5" width="196" height="1" uuid="1accf1f9-f3da-4d69-8bd8-95c43b45593d"/>
 				<graphicElement>
 					<pen lineStyle="Dotted"/>
 				</graphicElement>
 			</line>
-			<textField>
-				<reportElement x="0" y="27" width="196" height="15" uuid="03b513d1-6dad-4e07-89af-8d8aee279238"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Consolas" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Metode Pembayaran : " + $F{metode_bayar}]]></textFieldExpression>
-			</textField>
 			<staticText>
-				<reportElement x="0" y="48" width="90" height="15" uuid="a02205c5-dc1d-43ca-b456-3913a0c53e11"/>
+				<reportElement x="0" y="37" width="90" height="15" uuid="a02205c5-dc1d-43ca-b456-3913a0c53e11"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
 				<text><![CDATA[Subtotal]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="63" width="90" height="15" uuid="8a5e4e5e-a399-4a70-917c-819041e001ba"/>
+				<reportElement x="0" y="52" width="90" height="15" uuid="8a5e4e5e-a399-4a70-917c-819041e001ba"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
 				<text><![CDATA[Diskon]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="78" width="90" height="15" uuid="c6761688-e25d-4d55-8fc1-830f6623cade"/>
+				<reportElement x="0" y="67" width="90" height="15" uuid="c6761688-e25d-4d55-8fc1-830f6623cade"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Consolas" size="8" isBold="true"/>
+					<font fontName="Consolas" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="93" width="90" height="15" uuid="52d17483-b2ac-4560-9ef2-cf16a84a8013"/>
+				<reportElement x="0" y="97" width="90" height="15" uuid="326dc39c-74e3-4a20-982b-3442fcd1929e"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
-				<text><![CDATA[Bayar]]></text>
+				<text><![CDATA[Kembali]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="108" width="90" height="15" uuid="326dc39c-74e3-4a20-982b-3442fcd1929e"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Consolas" size="8"/>
-				</textElement>
-				<text><![CDATA[Kembalian]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="134" width="196" height="15" uuid="eee78192-73f2-47d6-87c5-4d1fc89affb9"/>
+				<reportElement x="0" y="123" width="196" height="15" uuid="eee78192-73f2-47d6-87c5-4d1fc89affb9"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
 				<text><![CDATA[Terimakasih sudah berbelanja]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="149" width="196" height="15" uuid="176a2551-1b94-499f-a71b-b7aba631af7b"/>
+				<reportElement x="0" y="138" width="196" height="15" uuid="176a2551-1b94-499f-a71b-b7aba631af7b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
 				<text><![CDATA[Sosial Media Depot Siloang]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="164" width="196" height="15" uuid="6d371c3f-1f39-4b4b-9312-e90ebe64bc51"/>
+				<reportElement x="0" y="153" width="196" height="15" uuid="6d371c3f-1f39-4b4b-9312-e90ebe64bc51"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
 				<text><![CDATA[https://www.instagram.com/siloang.id]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="100" y="63" width="96" height="15" uuid="6db1de28-0fa0-49fa-a07d-06bfff549965"/>
+				<reportElement x="100" y="52" width="96" height="15" uuid="6db1de28-0fa0-49fa-a07d-06bfff549965"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{diskon}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Rp." + $F{diskon}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="78" width="96" height="15" uuid="1e20fdd4-8c94-48ac-b5fa-bda366d63b1e"/>
+				<reportElement x="100" y="67" width="96" height="15" uuid="1e20fdd4-8c94-48ac-b5fa-bda366d63b1e"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Consolas" size="8"/>
+					<font fontName="Consolas" size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{total_harga}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Rp." + $F{total_harga}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="93" width="96" height="15" uuid="a3726e41-921a-47d3-b799-b1d6c6b33084"/>
+				<reportElement x="100" y="82" width="96" height="15" uuid="a3726e41-921a-47d3-b799-b1d6c6b33084"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{bayar}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Rp." + $F{bayar}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="108" width="96" height="15" uuid="3c80929e-e521-41dc-9a6f-e6d45cfc98aa"/>
+				<reportElement x="100" y="97" width="96" height="15" uuid="3c80929e-e521-41dc-9a6f-e6d45cfc98aa"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{kembali}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Rp." + $F{kembali}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="48" width="96" height="15" uuid="0048cc92-00e5-4571-a5c5-834d2d7a3bcf"/>
+				<reportElement x="0" y="82" width="90" height="15" uuid="97e6cb7a-d2b8-433e-b714-b91230221ae9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Consolas" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Bayar (" + $F{metode_bayar} + ")"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="37" width="96" height="15" uuid="4e6dc56c-d6eb-4672-bab7-37d605c4a2f2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Consolas" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{subtotal}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Rp." + $V{subtotal}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
