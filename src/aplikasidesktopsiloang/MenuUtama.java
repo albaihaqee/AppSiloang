@@ -22,6 +22,7 @@ import view.FiturBarcode;
 import view.FiturKartuStok;
 import view.FiturKategori;
 import view.FiturStokOpname;
+import view.NotifikasiPanel;
 
 public class MenuUtama extends javax.swing.JFrame {
 
@@ -978,6 +979,11 @@ public class MenuUtama extends javax.swing.JFrame {
         btn_email.setBackground(new java.awt.Color(242, 242, 242));
 
         btn_bell.setBackground(new java.awt.Color(242, 242, 242));
+        btn_bell.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btn_bellMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout pn_navbarLayout = new javax.swing.GroupLayout(pn_navbar);
         pn_navbar.setLayout(pn_navbarLayout);
@@ -1286,6 +1292,12 @@ public class MenuUtama extends javax.swing.JFrame {
         pn_btnKartuStok.setBackground(new Color(17,97,171));
         pn_line10.setBackground(new Color(17,97,171));
     }//GEN-LAST:event_lb_kartuStokMouseExited
+
+    private void btn_bellMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_bellMouseClicked
+        NotifikasiPanel notif = new NotifikasiPanel(this, true);
+        notif.setLocationRelativeTo(this); // Supaya muncul di tengah
+        notif.setVisible(true);
+    }//GEN-LAST:event_btn_bellMouseClicked
 
     /**
      * @param args the command line arguments

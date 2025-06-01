@@ -13,6 +13,8 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.Locale;
@@ -33,9 +35,10 @@ public class FiturKeuangan extends javax.swing.JPanel {
         conn = Koneksi.getConnection();
         this.userID = userID;
         setupCustomTableStyle();
-        setTabelModel();
+        setPlaceholderComboBox();
+        setTabelModelBulanan();
         setButtonIcons();
-        loadData();
+        loadDataBulanan();
 
         txt_search.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Pencarian");
         
@@ -128,6 +131,11 @@ public class FiturKeuangan extends javax.swing.JPanel {
         });
 
         cb_filter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih Filter", "Harian", "Mingguan", "Bulanan" }));
+        cb_filter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_filterActionPerformed(evt);
+            }
+        });
 
         btn_pdf.setBackground(new java.awt.Color(255, 0, 0));
         btn_pdf.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -210,6 +218,21 @@ public class FiturKeuangan extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_txt_searchKeyTyped
 
+    private void cb_filterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_filterActionPerformed
+        String filter = cb_filter.getSelectedItem().toString();
+        DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
+        model.setRowCount(0);
+        model.setColumnCount(0);
+
+        if (filter.equals("Harian")) {
+            loadDataHarian();
+        } else if (filter.equals("Mingguan")) {
+            loadDataMingguan();
+        } else if (filter.equals("Bulanan")) {
+            loadDataBulanan();
+        }
+    }//GEN-LAST:event_cb_filterActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_excel;
@@ -225,12 +248,110 @@ public class FiturKeuangan extends javax.swing.JPanel {
     private javax.swing.JTable tbl_data;
     private javax.swing.JTextField txt_search;
     // End of variables declaration//GEN-END:variables
-
-    private void loadData() {
+    
+    private void loadDataHarian() {
         DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
         model.setRowCount(0);
         if (model.getColumnCount() == 0) {
-            setTabelModel();
+            setTabelModelHarian();
+        }
+
+        try {
+            String sql = "SELECT tanggal, total_penjualan, total_pembelian, laba_bersih, tanggal_update FROM view_laporan_harian ORDER BY tanggal";
+            try (PreparedStatement st = conn.prepareStatement(sql)) {
+                ResultSet rs = st.executeQuery();
+                while (rs.next()) {
+                    Date tanggal = rs.getDate("tanggal");
+                    int totalPenjualan = rs.getInt("total_penjualan");
+                    int totalPembelian = rs.getInt("total_pembelian");
+                    int labaBersih = rs.getInt("laba_bersih");
+
+                    String totalPenjualanRp = formatRupiah(totalPenjualan);
+                    String totalPembelianRp = formatRupiah(totalPembelian);
+                    String labaBersihRp = formatRupiah(labaBersih);
+                    Date tanggalUpdate = rs.getDate("tanggal_update");
+
+                    Object[] rowData = {
+                        tanggal,
+                        totalPenjualanRp,
+                        totalPembelianRp,
+                        labaBersihRp,
+                        tanggalUpdate
+                    };
+                    model.addRow(rowData);
+                }
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(FiturKeuangan.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    private void setTabelModelHarian() {
+        DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
+        model.addColumn("Tanggal");
+        model.addColumn("Total Penjualan");
+        model.addColumn("Total Pembelian");
+        model.addColumn("Laba Bersih");
+        model.addColumn("Tanggal Update");
+    }
+    
+    private void loadDataMingguan() {
+        DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
+        model.setRowCount(0);
+        if (model.getColumnCount() == 0) {
+            setTabelModelMingguan();
+        }
+
+        try {
+            String sql = "SELECT tahun, minggu_ke, periode, total_penjualan, total_pembelian, laba_bersih, tanggal_update FROM view_laporan_mingguan ORDER BY tahun, minggu_ke";
+            try (PreparedStatement st = conn.prepareStatement(sql)) {
+                ResultSet rs = st.executeQuery();
+                while (rs.next()) {
+                    int tahun = rs.getInt("tahun");
+                    int mingguKe = rs.getInt("minggu_ke");
+                    String periode = rs.getString("periode");
+                    int totalPenjualan = rs.getInt("total_penjualan");
+                    int totalPembelian = rs.getInt("total_pembelian");
+                    int labaBersih = rs.getInt("laba_bersih");
+
+                    String totalPenjualanRp = formatRupiah(totalPenjualan);
+                    String totalPembelianRp = formatRupiah(totalPembelian);
+                    String labaBersihRp = formatRupiah(labaBersih);
+                    Date tanggalUpdate = rs.getDate("tanggal_update");
+
+                    Object[] rowData = {
+                        tahun,
+                        mingguKe,
+                        periode,
+                        totalPenjualanRp,
+                        totalPembelianRp,
+                        labaBersihRp,
+                        tanggalUpdate
+                    };
+                    model.addRow(rowData);
+                }
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(FiturKeuangan.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    private void setTabelModelMingguan() {
+        DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
+        model.addColumn("Tahun");
+        model.addColumn("Minggu Ke");
+        model.addColumn("Periode");
+        model.addColumn("Total Penjualan");
+        model.addColumn("Total Pembelian");
+        model.addColumn("Laba Bersih");
+        model.addColumn("Tanggal Update");
+    }
+    
+    private void loadDataBulanan() {
+        DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
+        model.setRowCount(0);
+        if (model.getColumnCount() == 0) {
+            setTabelModelBulanan();
         }
 
         try {
@@ -267,6 +388,35 @@ public class FiturKeuangan extends javax.swing.JPanel {
         } catch (SQLException e) {
             Logger.getLogger(FiturKeuangan.class.getName()).log(Level.SEVERE, null, e);
         }
+    }
+    
+    private void setTabelModelBulanan() {
+        DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
+        model.addColumn("Tahun");
+        model.addColumn("Bulan");
+        model.addColumn("Total Penjualan");
+        model.addColumn("Total Pembelian");
+        model.addColumn("Laba Bersih");
+        model.addColumn("Tanggal Update");
+    }
+    
+    private void setPlaceholderComboBox() {
+        if(cb_filter.getSelectedItem().equals("Pilih Filter")){
+            cb_filter.setForeground(new Color(153,153,153));
+        }
+        
+        cb_filter.addItemListener(new ItemListener(){
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED){
+                    if(cb_filter.getSelectedItem().equals("Pilih Filter")){
+                        cb_filter.setForeground(new Color(153,153,153));
+                    }else{
+                        cb_filter.setForeground(new Color(0,0,0));
+                    }
+                }
+            }
+        });
     }
 
     private void setupCustomTableStyle() {
@@ -322,16 +472,6 @@ public class FiturKeuangan extends javax.swing.JPanel {
             System.err.println("Error saat mengatur custom style tabel: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    private void setTabelModel() {
-        DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
-        model.addColumn("Tahun");
-        model.addColumn("Bulan");
-        model.addColumn("Total Penjualan");
-        model.addColumn("Total Pembelian");
-        model.addColumn("Laba Bersih");
-        model.addColumn("Tanggal Update");
     }
     
     private String getNamaBulan(int bulan) {

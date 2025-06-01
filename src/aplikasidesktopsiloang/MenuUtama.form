@@ -1409,6 +1409,9 @@
                   <Color blue="f2" green="f2" red="f2" type="rgb"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btn_bellMouseClicked"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
