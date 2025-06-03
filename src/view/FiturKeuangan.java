@@ -15,14 +15,31 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class FiturKeuangan extends javax.swing.JPanel {
 
@@ -61,7 +78,6 @@ public class FiturKeuangan extends javax.swing.JPanel {
         tbl_data = new javax.swing.JTable();
         txt_search = new javax.swing.JTextField();
         cb_filter = new javax.swing.JComboBox<>();
-        btn_pdf = new javax.swing.JButton();
         btn_excel = new javax.swing.JButton();
 
         setLayout(new java.awt.CardLayout());
@@ -137,17 +153,16 @@ public class FiturKeuangan extends javax.swing.JPanel {
             }
         });
 
-        btn_pdf.setBackground(new java.awt.Color(255, 0, 0));
-        btn_pdf.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        btn_pdf.setForeground(new java.awt.Color(255, 255, 255));
-        btn_pdf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icon_update.png"))); // NOI18N
-        btn_pdf.setText("PDF");
-
         btn_excel.setBackground(new java.awt.Color(51, 204, 0));
         btn_excel.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         btn_excel.setForeground(new java.awt.Color(255, 255, 255));
         btn_excel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icon_update.png"))); // NOI18N
         btn_excel.setText("EXCEL");
+        btn_excel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_excelActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelViewLayout = new javax.swing.GroupLayout(panelView);
         panelView.setLayout(panelViewLayout);
@@ -166,9 +181,7 @@ public class FiturKeuangan extends javax.swing.JPanel {
                             .addComponent(jLabel1))
                         .addGroup(panelViewLayout.createSequentialGroup()
                             .addComponent(cb_filter, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btn_pdf, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGap(10, 10, 10)
                             .addComponent(btn_excel)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -189,7 +202,6 @@ public class FiturKeuangan extends javax.swing.JPanel {
                 .addGap(9, 9, 9)
                 .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_pdf, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cb_filter, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn_excel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(txt_search))
@@ -208,13 +220,16 @@ public class FiturKeuangan extends javax.swing.JPanel {
     }//GEN-LAST:event_tbl_dataMouseClicked
 
     private void txt_searchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyTyped
-        try {
-            int bulan = Integer.parseInt(txt_search.getText().trim());
-            int tahun = LocalDate.now().getYear(); // atau bisa juga ambil dari input lain kalau ada
-            searchData((DefaultTableModel) tbl_data.getModel(), bulan, tahun);
-        } catch (NumberFormatException e) {
-            // kasih pesan kalau input-nya bukan angka
-            System.out.println("Input harus berupa angka bulan (1-12)");
+        String input = txt_search.getText().trim();
+
+        if (!input.isEmpty()) {
+            int bulan = getBulanDariNama(input);
+            if (bulan != -1) {
+                int tahun = LocalDate.now().getYear(); // atau ambil dari input kalau ada
+                searchData(bulan, tahun);
+            } else {
+                System.out.println("Nama bulan tidak valid. Contoh: Januari, Februari, dst.");
+            }
         }
     }//GEN-LAST:event_txt_searchKeyTyped
 
@@ -233,10 +248,13 @@ public class FiturKeuangan extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_cb_filterActionPerformed
 
+    private void btn_excelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_excelActionPerformed
+      exportToExcel();
+    }//GEN-LAST:event_btn_excelActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_excel;
-    private javax.swing.JButton btn_pdf;
     private javax.swing.JComboBox<String> cb_filter;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
@@ -486,24 +504,267 @@ public class FiturKeuangan extends javax.swing.JPanel {
             return "Bulan Tidak Valid";
         }
     }
-
+    
+    private int getBulanDariNama(String namaBulan) {
+        String[] namaBulanArray = {
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        };
+        
+        for (int i = 0; i < namaBulanArray.length; i++) {
+            if (namaBulanArray[i].equalsIgnoreCase(namaBulan)) {
+               return i + 1;
+            }
+        }
+        return -1;
+    }
+    
     private String formatRupiah(int amount) {
         NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
         String hasil = nf.format(amount);
-
-        // Replace Rp dan hilangkan ,00
         hasil = hasil.replace("Rp", "Rp.").replace(",00", "").replace(" ", "");
 
         return hasil;
     }
+    
+    private void exportToExcel() {
+        try {
+            if (tbl_data.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Tidak ada data untuk diekspor!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-    private void searchData(DefaultTableModel model, int bulan, int tahun) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Simpan Laporan Excel");
+
+            String filterType = cb_filter.getSelectedItem().toString();
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", new Locale("id", "ID")).format(new java.util.Date());
+            String defaultFileName = "Laporan_Keuangan_" + filterType + "_" + timestamp + ".xlsx";
+            fileChooser.setSelectedFile(new java.io.File(defaultFileName));
+
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files (*.xlsx)", "xlsx");
+            fileChooser.setFileFilter(filter);
+
+            int result = fileChooser.showSaveDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+                if (!filePath.toLowerCase().endsWith(".xlsx")) {
+                    filePath += ".xlsx";
+                }
+
+                createExcelReport(filePath, filterType);
+
+                JOptionPane.showMessageDialog(this, 
+                    "Laporan berhasil diekspor ke:\n" + filePath, 
+                    "Export Berhasil", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Terjadi kesalahan saat mengekspor: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(FiturKeuangan.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    private void createExcelReport(String filePath, String filterType) throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Laporan Keuangan " + filterType);
+
+        CellStyle headerStyle = workbook.createCellStyle();
+        org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setColor(IndexedColors.WHITE.getIndex());
+        headerStyle.setFont(headerFont);
+        headerStyle.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
+        setBorderStyle(headerStyle);
+
+        CellStyle dataStyle = workbook.createCellStyle();
+        dataStyle.setAlignment(HorizontalAlignment.LEFT);
+        dataStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
+        setBorderStyle(dataStyle);
+
+        CellStyle currencyStyle = workbook.createCellStyle();
+        currencyStyle.setAlignment(HorizontalAlignment.RIGHT);
+        currencyStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
+        setBorderStyle(currencyStyle);
+
+        CellStyle totalStyle = workbook.createCellStyle();
+        org.apache.poi.ss.usermodel.Font totalFont = workbook.createFont();
+        totalFont.setBold(true);
+        totalStyle.setFont(totalFont);
+        totalStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+        totalStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        totalStyle.setAlignment(HorizontalAlignment.RIGHT);
+        totalStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
+        setBorderStyle(totalStyle);
+
+        int rowNum = 0;
+
+        org.apache.poi.ss.usermodel.Row titleRow = sheet.createRow(rowNum++);
+        Cell titleCell = titleRow.createCell(0);
+        titleCell.setCellValue("LAPORAN KEUANGAN " + filterType.toUpperCase() + " - SILOANG");
+        CellStyle titleStyle = workbook.createCellStyle();
+        org.apache.poi.ss.usermodel.Font titleFont = workbook.createFont();
+        titleFont.setBold(true);
+        titleFont.setFontHeightInPoints((short) 16);
+        titleStyle.setFont(titleFont);
+        titleStyle.setAlignment(HorizontalAlignment.CENTER);
+        titleCell.setCellStyle(titleStyle);
+
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, tbl_data.getColumnCount() - 1));
+
+        rowNum++;
+        org.apache.poi.ss.usermodel.Row dateRow = sheet.createRow(rowNum++);
+        Cell dateCell = dateRow.createCell(0);
+        dateCell.setCellValue("Tanggal Cetak: " +
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss")));
+
+        rowNum++;
+
+        org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(rowNum++);
+        for (int i = 0; i < tbl_data.getColumnCount(); i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(tbl_data.getColumnName(i));
+            cell.setCellStyle(headerStyle);
+        }
+
+        long[] totals = new long[getTotalColumnCount(filterType)];
+        int[] totalColumnIndexes = getTotalColumnIndexes(filterType);
+
+        for (int i = 0; i < tbl_data.getRowCount(); i++) {
+            org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowNum++);
+            for (int j = 0; j < tbl_data.getColumnCount(); j++) {
+                Cell cell = row.createCell(j);
+                Object value = tbl_data.getValueAt(i, j);
+
+                if (value != null) {
+                    if (isCurrencyColumn(j, filterType)) {
+                        String strValue = value.toString();
+                        if (strValue.startsWith("Rp.")) {
+                            String numericValue = strValue.replace("Rp.", "").replace(".", "").trim();
+                            try {
+                                long numValue = Long.parseLong(numericValue);
+                                for (int k = 0; k < totalColumnIndexes.length; k++) {
+                                    if (totalColumnIndexes[k] == j) {
+                                        totals[k] += numValue;
+                                        break;
+                                    }
+                                }
+                            } catch (NumberFormatException e) {
+                            }
+                        }
+                        cell.setCellValue(value.toString());
+                        cell.setCellStyle(currencyStyle);
+                    } else {
+                        cell.setCellValue(value.toString());
+                        cell.setCellStyle(dataStyle);
+                    }
+                }
+            }
+        }
+
+        if (totals.length > 0) {
+            rowNum++;
+            org.apache.poi.ss.usermodel.Row totalRow = sheet.createRow(rowNum++);
+
+            Cell totalLabelCell = totalRow.createCell(0);
+            totalLabelCell.setCellValue("TOTAL");
+            totalLabelCell.setCellStyle(totalStyle);
+
+            for (int i = 0; i < totalColumnIndexes.length; i++) {
+                int colIndex = totalColumnIndexes[i];
+                Cell totalCell = totalRow.createCell(colIndex);
+                String totalValue = formatRupiah((int) totals[i]);
+                totalCell.setCellValue(totalValue);
+                totalCell.setCellStyle(totalStyle);
+            }
+
+            for (int j = 1; j < tbl_data.getColumnCount(); j++) {
+                boolean isTotalColumn = false;
+                for (int totalColIndex : totalColumnIndexes) {
+                    if (totalColIndex == j) {
+                        isTotalColumn = true;
+                        break;
+                    }
+                }
+                if (!isTotalColumn) {
+                    Cell cell = totalRow.createCell(j);
+                    cell.setCellValue("-");
+                    cell.setCellStyle(totalStyle);
+                }
+            }
+        }
+
+        for (int i = 0; i < tbl_data.getColumnCount(); i++) {
+            sheet.autoSizeColumn(i);
+            if (sheet.getColumnWidth(i) < 3000) {
+                sheet.setColumnWidth(i, 3000);
+            }
+            if (isCurrencyColumn(i, filterType) && sheet.getColumnWidth(i) > 5000) {
+                sheet.setColumnWidth(i, 5000);
+            }
+        }
+
+        try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+            workbook.write(outputStream);
+        }
+
+        workbook.close();
+    }
+
+    private void setBorderStyle(CellStyle style) {
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+    }
+
+    private boolean isCurrencyColumn(int columnIndex, String filterType) {
+        switch (filterType) {
+            case "Harian":
+                return columnIndex >= 1 && columnIndex <= 3;
+            case "Mingguan":
+                return columnIndex >= 3 && columnIndex <= 5;
+            case "Bulanan":
+                return columnIndex >= 2 && columnIndex <= 4;
+            default:
+                return false;
+        }
+    }
+
+    private int getTotalColumnCount(String filterType) {
+        return 3;
+    }
+
+    private int[] getTotalColumnIndexes(String filterType) {
+        switch (filterType) {
+            case "Harian":
+                return new int[]{1, 2, 3};
+            case "Mingguan":
+                return new int[]{3, 4, 5};
+            case "Bulanan":
+                return new int[]{2, 3, 4};
+            default:
+                return new int[]{};
+        }
+    }
+
+    private void searchData(int bulan, int tahun) {
+        DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
         model.setRowCount(0);
+
+        if (model.getColumnCount() == 0) {
+            setTabelModelBulanan();
+        }
 
         try {
             String sql = "SELECT tahun, bulan, total_penjualan, total_pembelian, laba_bersih, tanggal_update "
                        + "FROM view_laporan_keuangan WHERE bulan = ? AND tahun = ? ORDER BY tahun, bulan";
-
             try (PreparedStatement st = conn.prepareStatement(sql)) {
                 st.setInt(1, bulan);
                 st.setInt(2, tahun);
@@ -539,7 +800,7 @@ public class FiturKeuangan extends javax.swing.JPanel {
         int iconSize = 18;  
         Color iconColor = Color.WHITE;  
 
-        btn_pdf.setIcon(createSVGIcon("icons/pdf.svg", iconSize, iconColor));
+        //btn_pdf.setIcon(createSVGIcon("icons/pdf.svg", iconSize, iconColor));
         btn_excel.setIcon(createSVGIcon("icons/excel.svg", iconSize, iconColor));
     }
 

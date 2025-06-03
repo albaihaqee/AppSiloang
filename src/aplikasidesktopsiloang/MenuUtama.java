@@ -22,7 +22,7 @@ import view.FiturBarcode;
 import view.FiturKartuStok;
 import view.FiturKategori;
 import view.FiturStokOpname;
-import view.NotifikasiPanel;
+import view.NotifikasiBell;
 
 public class MenuUtama extends javax.swing.JFrame {
 
@@ -1294,7 +1294,7 @@ public class MenuUtama extends javax.swing.JFrame {
     }//GEN-LAST:event_lb_kartuStokMouseExited
 
     private void btn_bellMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_bellMouseClicked
-        NotifikasiPanel notif = new NotifikasiPanel(this, true);
+        NotifikasiBell notif = new NotifikasiBell(this, true);
         notif.setLocationRelativeTo(this); // Supaya muncul di tengah
         notif.setVisible(true);
     }//GEN-LAST:event_btn_bellMouseClicked
