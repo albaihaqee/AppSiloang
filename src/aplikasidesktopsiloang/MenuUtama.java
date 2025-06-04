@@ -22,15 +22,14 @@ import view.FiturBarcode;
 import view.FiturKartuStok;
 import view.FiturKategori;
 import view.FiturStokOpname;
+import view.PanelNotifikasiStok;
 
 public class MenuUtama extends javax.swing.JFrame {
 
     private String userID;
     private Connection conn;
-    private Timer timerNotifikasi;
-    private Timer animasiTimer;
-    private boolean isBlinking = false;
-    private final int iconSize = 18;
+    private ImageProfil imageProfil;
+    private Timer notificationTimer;
 
     public MenuUtama(String userID) {
         initComponents();
@@ -40,8 +39,7 @@ public class MenuUtama extends javax.swing.JFrame {
         setWhiteSidebarIcons();
         setBlueSidebarIcons();
         setButtonIcons();
-        cekNotifikasi();
-        mulaiCekNotifikasi();
+        startNotificationListener() ;
 
         lb_profil.setIcon(new FlatSVGIcon("icons/profilDepot.svg", 35, 35));
     }
@@ -113,7 +111,6 @@ public class MenuUtama extends javax.swing.JFrame {
         lb_nameUser = new javax.swing.JLabel();
         lb_level = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        btn_tesBell = new javax.swing.JButton();
         btn_bell = new javax.swing.JButton();
         pn_dasar = new javax.swing.JPanel();
         pn_utama = new javax.swing.JPanel();
@@ -981,27 +978,10 @@ public class MenuUtama extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(153, 153, 153));
         jLabel2.setText("|");
 
-        btn_tesBell.setBackground(new java.awt.Color(242, 242, 242));
-        btn_tesBell.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btn_tesBellMouseClicked(evt);
-            }
-        });
-        btn_tesBell.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_tesBellActionPerformed(evt);
-            }
-        });
-
         btn_bell.setBackground(new java.awt.Color(242, 242, 242));
         btn_bell.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btn_bellMouseClicked(evt);
-            }
-        });
-        btn_bell.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_bellActionPerformed(evt);
             }
         });
 
@@ -1012,11 +992,9 @@ public class MenuUtama extends javax.swing.JFrame {
             .addGroup(pn_navbarLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addComponent(icon_barMenu)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 778, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 820, Short.MAX_VALUE)
                 .addComponent(btn_bell, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
-                .addComponent(btn_tesBell, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addGap(10, 10, 10)
                 .addGroup(pn_navbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1046,7 +1024,6 @@ public class MenuUtama extends javax.swing.JFrame {
                 .addGap(8, 8, 8)
                 .addGroup(pn_navbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btn_bell, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_tesBell, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -1311,25 +1288,15 @@ public class MenuUtama extends javax.swing.JFrame {
         pn_line10.setBackground(new Color(17, 97, 171));
     }//GEN-LAST:event_lb_kartuStokMouseExited
 
-    private void btn_tesBellMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_tesBellMouseClicked
-
-    }//GEN-LAST:event_btn_tesBellMouseClicked
-
-    private void btn_tesBellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_tesBellActionPerformed
-//        setProduk();
-        PopupNotifikasi popup = new PopupNotifikasi(this, false); // kirim JFrame utama
-        popup.showAtScreenCorner();
-
-
-    }//GEN-LAST:event_btn_tesBellActionPerformed
-
     private void btn_bellMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_bellMouseClicked
-        // TODO add your handling code here:
+        PanelNotifikasiStok notif = new PanelNotifikasiStok(this, true);
+        if (notif.isStokMenipis()) {
+            btn_bell.setIcon(createSVGIcon("icons/bell.svg", 18, Color.RED));
+        } else {
+            btn_bell.setIcon(createSVGIcon("icons/bell.svg", 18, new Color(153, 153, 153)));
+        }
+        notif.showNotificationBelowBell(btn_bell);
     }//GEN-LAST:event_btn_bellMouseClicked
-
-    private void btn_bellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_bellActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_bellActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1368,7 +1335,6 @@ public class MenuUtama extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_bell;
-    private javax.swing.JButton btn_tesBell;
     private javax.swing.JLabel icon_barMenu;
     private javax.swing.JLabel icon_barcode;
     private javax.swing.JLabel icon_dashboard;
@@ -1434,37 +1400,6 @@ public class MenuUtama extends javax.swing.JFrame {
     private javax.swing.JPanel pn_utama;
     // End of variables declaration//GEN-END:variables
 
-    private void setProduk() {
-        PopupNotifikasi notif = new PopupNotifikasi(null, true);
-        notif.setVisible(true);
-    }
-
-    private void mulaiCekNotifikasi() {
-
-        timerNotifikasi = new Timer(2000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cekNotifikasi();
-            }
-        });
-        timerNotifikasi.start();
-    }
-
-    private void cekNotifikasi() {
-        Color iconColor = new Color(17, 97, 171);
-        Color iconColor2 = new Color(255,0,0);
-        int iconSize = 20;  // gunakan satu nama saja (bukan IconSize dan iconSize beda!)
-
-        PopupNotifikasi popup = new PopupNotifikasi(this, true);
-        boolean adaStokMenipis = popup.isStokMenipis();
-
-        if (adaStokMenipis) {
-            btn_tesBell.setIcon(createSVGIcon("icons/tesBellRed.svg", iconSize, iconColor2)); // warna asli merah
-        } else {
-            btn_tesBell.setIcon(createSVGIcon("icons/tesBell.svg", iconSize, iconColor)); // warna biru custom
-        }
-    }
-
     private void setUserInfo() {
         if (conn != null) {
             try {
@@ -1487,7 +1422,7 @@ public class MenuUtama extends javax.swing.JFrame {
     }
 
     private boolean sidebarVisible = true;
-    private final int SIDEBAR_WIDTH = 250; // Sesuaikan dengan lebar sidebar yang sebenarnya
+    private final int SIDEBAR_WIDTH = 250; 
     private Timer animationTimer;
 
     public void toggleSidebar() {
@@ -1575,6 +1510,26 @@ public class MenuUtama extends javax.swing.JFrame {
         kartuStokIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.WHITE));
         icon_kartuStok.setIcon(kartuStokIcon.derive(iconSize, iconSize));
     }
+    
+    private void startNotificationListener() {
+        notificationTimer = new Timer(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateBellIconColor();
+            }
+        });
+        notificationTimer.start();
+    }
+
+    private void updateBellIconColor() {
+        PanelNotifikasiStok notif = new PanelNotifikasiStok(this, true);
+
+        if (notif.isStokMenipis()) {
+            btn_bell.setIcon(createSVGIcon("icons/bell.svg", 18, Color.RED));
+        } else {
+            btn_bell.setIcon(createSVGIcon("icons/bell.svg", 18, new Color(153, 153, 153)));
+        }
+    }
 
     private void setBlueSidebarIcons() {
         int iconSize = 20;
@@ -1591,7 +1546,7 @@ public class MenuUtama extends javax.swing.JFrame {
         btn_bell.setIcon(createSVGIcon("icons/bell.svg", iconSize, iconColor));
         //btn_email.setIcon(createSVGIcon("icons/email.svg", iconSize, iconColor));
     }
-    
+
     private FlatSVGIcon createSVGIcon(String path, int size, Color color) {
         FlatSVGIcon icon = new FlatSVGIcon(path).derive(size, size);
         icon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> color));
