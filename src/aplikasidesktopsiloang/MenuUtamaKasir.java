@@ -5,9 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import view.FiturLogin;
+import view.FiturDashboard;
 import view.FiturProduk;
 import view.FiturPelanggan;
+import view.FiturSupplier;
 import view.FiturPenjualan;
+import view.FiturPembelian;
+import view.FiturKeuangan;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,12 +19,17 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.Timer;
 import view.FiturBarcode;
+import view.FiturKartuStok;
 import view.FiturKategori;
+import view.FiturStokOpname;
+import view.PanelNotifikasiStok;
 
 public class MenuUtamaKasir extends javax.swing.JFrame {
 
     private String userID;
     private Connection conn;
+    private ImageProfil imageProfil;
+    private Timer notificationTimer;
 
     public MenuUtamaKasir(String userID) {
         initComponents();
@@ -30,6 +39,7 @@ public class MenuUtamaKasir extends javax.swing.JFrame {
         setWhiteSidebarIcons();
         setBlueSidebarIcons();
         setButtonIcons();
+        startNotificationListener() ;
 
         lb_profil.setIcon(new FlatSVGIcon("icons/profilDepot.svg", 35, 35));
     }
@@ -539,11 +549,6 @@ public class MenuUtamaKasir extends javax.swing.JFrame {
                 btn_bellMouseClicked(evt);
             }
         });
-        btn_bell.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_bellActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout pn_navbarLayout = new javax.swing.GroupLayout(pn_navbar);
         pn_navbar.setLayout(pn_navbarLayout);
@@ -552,9 +557,9 @@ public class MenuUtamaKasir extends javax.swing.JFrame {
             .addGroup(pn_navbarLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addComponent(icon_barMenu)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 778, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 820, Short.MAX_VALUE)
                 .addComponent(btn_bell, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52)
+                .addGap(10, 10, 10)
                 .addComponent(jLabel2)
                 .addGap(10, 10, 10)
                 .addGroup(pn_navbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -747,12 +752,14 @@ public class MenuUtamaKasir extends javax.swing.JFrame {
     }//GEN-LAST:event_lb_kategoriMouseExited
 
     private void btn_bellMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_bellMouseClicked
-        // TODO add your handling code here:
+        PanelNotifikasiStok notif = new PanelNotifikasiStok(this, true);
+        if (notif.isStokMenipis()) {
+            btn_bell.setIcon(createSVGIcon("icons/bell.svg", 18, Color.RED));
+        } else {
+            btn_bell.setIcon(createSVGIcon("icons/bell.svg", 18, new Color(153, 153, 153)));
+        }
+        notif.showNotificationBelowBell(btn_bell);
     }//GEN-LAST:event_btn_bellMouseClicked
-
-    private void btn_bellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_bellActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_bellActionPerformed
 
     /**
      * @param args the command line arguments
@@ -854,7 +861,7 @@ public class MenuUtamaKasir extends javax.swing.JFrame {
     }
 
     private boolean sidebarVisible = true;
-    private final int SIDEBAR_WIDTH = 250; // Sesuaikan dengan lebar sidebar yang sebenarnya
+    private final int SIDEBAR_WIDTH = 250; 
     private Timer animationTimer;
 
     public void toggleSidebar() {
@@ -917,6 +924,27 @@ public class MenuUtamaKasir extends javax.swing.JFrame {
         FlatSVGIcon penjualanIcon = new FlatSVGIcon("icons/penjualan.svg");
         penjualanIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.WHITE));
         icon_penjualan.setIcon(penjualanIcon.derive(iconSize, iconSize));
+
+    }
+    
+    private void startNotificationListener() {
+        notificationTimer = new Timer(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateBellIconColor();
+            }
+        });
+        notificationTimer.start();
+    }
+
+    private void updateBellIconColor() {
+        PanelNotifikasiStok notif = new PanelNotifikasiStok(this, true);
+
+        if (notif.isStokMenipis()) {
+            btn_bell.setIcon(createSVGIcon("icons/bell.svg", 18, Color.RED));
+        } else {
+            btn_bell.setIcon(createSVGIcon("icons/bell.svg", 18, new Color(153, 153, 153)));
+        }
     }
 
     private void setBlueSidebarIcons() {
@@ -934,7 +962,7 @@ public class MenuUtamaKasir extends javax.swing.JFrame {
         btn_bell.setIcon(createSVGIcon("icons/bell.svg", iconSize, iconColor));
         //btn_email.setIcon(createSVGIcon("icons/email.svg", iconSize, iconColor));
     }
-    
+
     private FlatSVGIcon createSVGIcon(String path, int size, Color color) {
         FlatSVGIcon icon = new FlatSVGIcon(path).derive(size, size);
         icon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> color));

@@ -138,7 +138,8 @@ public class PanelDropdownProfil extends javax.swing.JDialog {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(17, 97, 171));
         headerPanel.setBorder(new EmptyBorder(12, 16, 12, 16));
-        headerPanel.setPreferredSize(new Dimension(280, 44)); // Fixed header height
+        headerPanel.setMinimumSize(new Dimension(200, 44));
+        headerPanel.setPreferredSize(new Dimension(250, 44));
 
         // Left side - Icon and title
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -189,21 +190,7 @@ public class PanelDropdownProfil extends javax.swing.JDialog {
     }
 
     private void loadMenuItems() {
-        // Account menu item
-        JPanel accountPanel = createMenuItemPanel("Account", "Kelola informasi akun", "account.svg", "👤", () -> {
-            handleAccountClick();
-        });
-        itemsContainer.add(accountPanel);
-        itemsContainer.add(createSeparator());
-
-        // Change Password menu item
-        JPanel passwordPanel = createMenuItemPanel("Ganti Password", "Ubah kata sandi akun", "password.svg", "🔑", () -> {
-            handleChangePasswordClick();
-        });
-        itemsContainer.add(passwordPanel);
-        itemsContainer.add(createSeparator());
-
-        // Logout menu item
+        // Logout menu item only
         JPanel logoutPanel = createMenuItemPanel("Logout", "Keluar dari aplikasi", "logout.svg", "🚪", () -> {
             handleLogoutClick();
         });
@@ -214,9 +201,8 @@ public class PanelDropdownProfil extends javax.swing.JDialog {
         JPanel itemPanel = new JPanel(new BorderLayout());
         itemPanel.setBackground(Color.WHITE);
         itemPanel.setBorder(new EmptyBorder(12, 16, 12, 16));
-        itemPanel.setPreferredSize(new Dimension(280, 60)); // Fixed item height
-        itemPanel.setMaximumSize(new Dimension(280, 60));
-        itemPanel.setMinimumSize(new Dimension(280, 60));
+        itemPanel.setMinimumSize(new Dimension(200, 60));
+        itemPanel.setPreferredSize(new Dimension(250, 60));
 
         // Left side - Icon and main info
         JPanel leftPanel = new JPanel(new BorderLayout());
@@ -289,15 +275,6 @@ public class PanelDropdownProfil extends javax.swing.JDialog {
         return itemPanel;
     }
 
-    private JSeparator createSeparator() {
-        JSeparator separator = new JSeparator();
-        separator.setForeground(new Color(240, 240, 240));
-        separator.setPreferredSize(new Dimension(280, 1));
-        separator.setMaximumSize(new Dimension(280, 1));
-        separator.setMinimumSize(new Dimension(280, 1));
-        return separator;
-    }
-
     private JLabel createSVGIcon(String svgPath, int size) {
         try {
             String fullPath = "icons/" + svgPath;
@@ -312,13 +289,18 @@ public class PanelDropdownProfil extends javax.swing.JDialog {
     private void setupDialog() {
         int headerHeight = 44;
         int itemHeight = 60;      
-        int separatorHeight = 1;
-        int totalMenuItems = 3; // Account, Change Password, Logout
+        int totalMenuItems = 1; // Only Logout
 
-        int contentHeight = (totalMenuItems * itemHeight) + ((totalMenuItems - 1) * separatorHeight);
+        int contentHeight = totalMenuItems * itemHeight;
         int totalHeight = headerHeight + contentHeight;
         
-        setSize(280, totalHeight);
+        // Responsive sizing
+        int minWidth = 200;
+        int preferredWidth = 250;
+        
+        setMinimumSize(new Dimension(minWidth, totalHeight));
+        setPreferredSize(new Dimension(preferredWidth, totalHeight));
+        setSize(preferredWidth, totalHeight);
 
         setBackground(Color.WHITE);
         getRootPane().setBorder(BorderFactory.createCompoundBorder(
@@ -332,23 +314,23 @@ public class PanelDropdownProfil extends javax.swing.JDialog {
         Point profileLocation = profileComponent.getLocationOnScreen();
 
         // Position the popup below and aligned to the right edge of the profile
-        int x = profileLocation.x + profileComponent.getWidth() - getWidth();
+        int x = profileLocation.x + profileComponent.getWidth() - getPreferredSize().width;
         int y = profileLocation.y + profileComponent.getHeight() + 5; // 5px gap below profile
 
         // Ensure dialog stays within screen bounds
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         // Adjust horizontal position if needed
-        if (x + getWidth() > screenSize.width) {
-            x = screenSize.width - getWidth() - 10;
+        if (x + getPreferredSize().width > screenSize.width) {
+            x = screenSize.width - getPreferredSize().width - 10;
         }
         if (x < 10) {
             x = 10;
         }
 
         // Adjust vertical position if needed
-        if (y + getHeight() > screenSize.height) {
-            y = profileLocation.y - getHeight() - 5; // Show above profile if no space below
+        if (y + getPreferredSize().height > screenSize.height) {
+            y = profileLocation.y - getPreferredSize().height - 5; // Show above profile if no space below
         }
         if (y < 10) {
             y = 10;
@@ -376,31 +358,7 @@ public class PanelDropdownProfil extends javax.swing.JDialog {
         }, AWTEvent.MOUSE_EVENT_MASK);
     }
 
-    // Action handlers
-    private void handleAccountClick() {
-        dispose();
-        if (currentUserId == null || currentUserId.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                this,
-                "Data user tidak tersedia. Silakan login ulang.",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        // Panggil method untuk menampilkan data user
-        getUserInfo(currentUserId);
-    }
-
-    private void handleChangePasswordClick() {
-        dispose();
-        JOptionPane.showMessageDialog(getParent(), 
-            "Dialog ganti password akan dibuka\n(Implementasi fitur ganti password di sini)", 
-            "Ganti Password", 
-            JOptionPane.INFORMATION_MESSAGE);
-    }
-
+    // Action handler
     private void handleLogoutClick() {
         int confirmDialog = javax.swing.JOptionPane.showConfirmDialog(
                 this,
@@ -430,54 +388,6 @@ public class PanelDropdownProfil extends javax.swing.JDialog {
                 LoginFrame.toFront();
                 LoginFrame.requestFocus();
             });
-        }
-    }
-    
-    private void getUserInfo(String userId) {
-        try {
-            String sql = "SELECT * FROM users WHERE id_user = ? OR username = ?";
-            PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setString(1, userId);
-            pst.setString(2, userId);
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                String idUser = rs.getString("id_user");
-                String namaUser = rs.getString("nama_user");
-                String rfidUser = rs.getString("rfid_user");
-                String username = rs.getString("username");
-                String level = rs.getString("level");
-
-                StringBuilder message = new StringBuilder();
-                message.append("INFORMASI AKUN PENGGUNA\n");
-                message.append("================================\n");
-                message.append("ID User        : ").append(idUser).append("\n");
-                message.append("Nama User      : ").append(namaUser).append("\n");
-                message.append("RFID User      : ").append(rfidUser != null ? rfidUser : "Tidak ada").append("\n");
-                message.append("Username       : ").append(username).append("\n");
-                message.append("Level          : ").append(level).append("\n");
-                message.append("================================");
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    message.toString(),
-                    "Informasi Akun",
-                    JOptionPane.INFORMATION_MESSAGE
-                );
-            } else {
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Data user tidak ditemukan.",
-                    "User Tidak Ditemukan",
-                    JOptionPane.WARNING_MESSAGE
-                );
-            }
-
-            rs.close();
-            pst.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
     }
     

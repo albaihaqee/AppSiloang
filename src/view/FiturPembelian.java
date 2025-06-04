@@ -30,13 +30,14 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class FiturPembelian extends javax.swing.JPanel {
-    
+
     private final Connection conn;
     private String userID;
+    private boolean isRefillGalon = false;
 
     public FiturPembelian(String userID) {
         initComponents();
-        
+
         conn = Koneksi.getConnection();
         this.userID = userID;
         setupCustomTableStyle();
@@ -49,11 +50,11 @@ public class FiturPembelian extends javax.swing.JPanel {
         actionButton();
         setPlaceholderField();
         setButtonIcons();
-        
+
         FlatSVGIcon dashboardIcon = new FlatSVGIcon("icons/pembelian.svg").derive(15, 15);
         dashboardIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> new Color(17, 97, 171)));
         lb_pembelian.setIcon(dashboardIcon);
-        
+
         FlatSVGIcon dashboardSVG = new FlatSVGIcon("icons/pembelian.svg").derive(15, 15);
         dashboardSVG.setColorFilter(new FlatSVGIcon.ColorFilter(color -> new Color(17, 97, 171)));
         icon_pembelian.setIcon(dashboardSVG);
@@ -762,10 +763,10 @@ public class FiturPembelian extends javax.swing.JPanel {
         panelMain.add(panelAdd);
         panelMain.repaint();
         panelMain.revalidate();
-        
+
         txt_idPembelian.setText(setIDPembelian());
         txt_tanggal.setDate(new Date());
-        
+
         txt_subtotal.setEnabled(false); //Gabisa diklik
         txt_kembalian.setEnabled(false); //Gabisa diklik
         txt_totalHarga.setEnabled(false); //Gabisa diklik   
@@ -780,26 +781,21 @@ public class FiturPembelian extends javax.swing.JPanel {
     }//GEN-LAST:event_btn_cancelActionPerformed
 
     private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
-        if(btn_save.getText().equals("TAMBAH"))
-            {
-                btn_save.setText("SIMPAN");
-            }
-        else if(btn_save.getText().equals("SIMPAN"))
-            {
-                insertData();
-                insertDataDetail();
-                deleteDataSementara();
-                resetForm();
-                loadData();
-                showPanel();
-            }
-        else if(btn_save.getText().equals("PERBARUI"))
-            {
-                updateData();
-                resetForm();
-                loadData();
-                showPanel();
-            }
+        if (btn_save.getText().equals("TAMBAH")) {
+            btn_save.setText("SIMPAN");
+        } else if (btn_save.getText().equals("SIMPAN")) {
+            insertData();
+            insertDataDetail();
+            deleteDataSementara();
+            resetForm();
+            loadData();
+            showPanel();
+        } else if (btn_save.getText().equals("PERBARUI")) {
+            updateData();
+            resetForm();
+            loadData();
+            showPanel();
+        }
     }//GEN-LAST:event_btn_saveActionPerformed
 
     private void txt_searchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyTyped
@@ -808,29 +804,31 @@ public class FiturPembelian extends javax.swing.JPanel {
 
     private void txt_jumlahKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_jumlahKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            // Ambil nilai jumlah beli
             String jumlahText = txt_jumlah.getText();
-
             try {
-                // Cek apakah jumlah beli negatif
                 int jumlahBeli = Integer.parseInt(jumlahText);
                 if (jumlahBeli < 0) {
-                    // Jika jumlah beli negatif, tampilkan pesan kesalahan
                     JOptionPane.showMessageDialog(this, "Jumlah beli tidak bisa negatif!", "Input Error", JOptionPane.ERROR_MESSAGE);
-
-                    // Kosongkan text field jumlah beli
                     txt_jumlah.setText("");
                 } else {
-                    // Jika jumlah beli valid, lanjutkan ke proses lainnya
-                    getSubtotal();
+                    int jumlahAsli = jumlahBeli;
+                    int quantityTampil = jumlahBeli;
+
+                    // Jika produk adalah refill galon, kalikan 19 untuk quantity tampil
+                    if (isRefillGalon) {
+                        quantityTampil *= 19;
+                    }
+
+                    // Proses dengan parameter yang benar
+                    getSubtotal(jumlahAsli); // Hitung harga dengan jumlah asli
                     txt_totalHarga.setText(getTotalHarga());
-                    insertDataSementara();
+                    insertDataSementara(jumlahAsli, quantityTampil); // Simpan dengan quantity yang sesuai
                 }
             } catch (NumberFormatException e) {
-                // Jika input bukan angka, tampilkan pesan kesalahan
                 JOptionPane.showMessageDialog(this, "Harap masukkan angka yang valid!", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+
     }//GEN-LAST:event_txt_jumlahKeyPressed
 
     private void txt_bayarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_bayarKeyPressed
@@ -840,9 +838,9 @@ public class FiturPembelian extends javax.swing.JPanel {
     }//GEN-LAST:event_txt_bayarKeyPressed
 
     private void btn_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_editActionPerformed
-            getSubtotal();
-            getUpdateTotalHargaDanBeli();
-            updateDataSementara();
+        getSubtotal();
+        getUpdateTotalHargaDanBeli();
+        updateDataSementara();
     }//GEN-LAST:event_btn_editActionPerformed
 
     private void tbl_dataSementaraMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_dataSementaraMouseClicked
@@ -934,27 +932,27 @@ public class FiturPembelian extends javax.swing.JPanel {
         getData((DefaultTableModel) tbl_data.getModel());
         pn_detail.setVisible(false);
     }
-    
+
     private void loadDataSementara() {
         getDataSementara((DefaultTableModel) tbl_dataSementara.getModel());
         btn_delete.setVisible(false);
         btn_cancelSementara.setVisible(false);
     }
-    
+
     private void showPanel() {
         panelMain.removeAll();
         panelMain.add(new FiturPembelian(userID));
         panelMain.repaint();
         panelMain.revalidate();
     }
-    
+
     private void resetForm() {
         txt_idPembelian.setText("");
         txt_tanggal.setDate(null);
         txt_jumlah.setText("");
         txt_subtotal.setText("0");
     }
-    
+
     private void resetFormProduk() {
         txt_idProduk.setText("");
         txt_namaProduk.setText("");
@@ -963,50 +961,50 @@ public class FiturPembelian extends javax.swing.JPanel {
         txt_jumlah.setText("");
         txt_subtotal.setText("0");
     }
-    
+
     private void actionButton() {
-        btn_setPelanggan.addActionListener(new ActionListener(){
+        btn_setPelanggan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setSupplier();
             }
         });
-        
-        btn_setProduk.addActionListener(new ActionListener(){
+
+        btn_setProduk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setProduk();
             }
         });
-        
-        tbl_data.addMouseListener(new MouseAdapter(){
+
+        tbl_data.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e){
+            public void mouseClicked(MouseEvent e) {
                 pn_detail.setVisible(true);
-                
+
                 int row = tbl_data.getSelectedRow();
                 String id = tbl_data.getValueAt(row, 0).toString();
                 getDataDetail((DefaultTableModel) tbl_dataDetail.getModel(), id);
             }
         });
-        
+
         tbl_dataSementara.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getType() == TableModelEvent.UPDATE && e.getColumn() == 4) { 
+                if (e.getType() == TableModelEvent.UPDATE && e.getColumn() == 4) {
                     btn_delete.setVisible(true);
                     getSubtotal();
                     getUpdateTotalHargaDanBeli();
                 }
             }
         });
-    }     
-    
+    }
+
     private void setupCustomTableStyle() {
         try {
             Color headerColor = new Color(17, 97, 171);
             Color selectionColor = new Color(200, 200, 200);
-            
+
             UIManager.put("TableHeader.background", headerColor);
             UIManager.put("TableHeader.foreground", Color.WHITE);
             UIManager.put("Table.selectionBackground", selectionColor);
@@ -1027,13 +1025,13 @@ public class FiturPembelian extends javax.swing.JPanel {
                 tbl_data.setIntercellSpacing(new Dimension(0, 0));
                 tbl_data.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
                     @Override
-                    public Component getTableCellRendererComponent(JTable table, Object value, 
+                    public Component getTableCellRendererComponent(JTable table, Object value,
                             boolean isSelected, boolean hasFocus, int row, int column) {
-                        Component comp = super.getTableCellRendererComponent(table, value, 
+                        Component comp = super.getTableCellRendererComponent(table, value,
                                 isSelected, false, row, column);
                         if (isSelected) {
                             comp.setBackground(selectionColor);
-                            comp.setForeground(Color.BLACK); 
+                            comp.setForeground(Color.BLACK);
                         } else {
                             if (row % 2 == 0) {
                                 comp.setBackground(Color.WHITE);
@@ -1063,13 +1061,13 @@ public class FiturPembelian extends javax.swing.JPanel {
                 tbl_dataDetail.setIntercellSpacing(new Dimension(0, 0));
                 tbl_dataDetail.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
                     @Override
-                    public Component getTableCellRendererComponent(JTable table, Object value, 
+                    public Component getTableCellRendererComponent(JTable table, Object value,
                             boolean isSelected, boolean hasFocus, int row, int column) {
-                        Component comp = super.getTableCellRendererComponent(table, value, 
+                        Component comp = super.getTableCellRendererComponent(table, value,
                                 isSelected, false, row, column);
                         if (isSelected) {
                             comp.setBackground(selectionColor);
-                            comp.setForeground(Color.BLACK); 
+                            comp.setForeground(Color.BLACK);
                         } else {
                             if (row % 2 == 0) {
                                 comp.setBackground(Color.WHITE);
@@ -1099,13 +1097,13 @@ public class FiturPembelian extends javax.swing.JPanel {
                 tbl_dataSementara.setIntercellSpacing(new Dimension(0, 0));
                 tbl_dataSementara.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
                     @Override
-                    public Component getTableCellRendererComponent(JTable table, Object value, 
+                    public Component getTableCellRendererComponent(JTable table, Object value,
                             boolean isSelected, boolean hasFocus, int row, int column) {
-                        Component comp = super.getTableCellRendererComponent(table, value, 
+                        Component comp = super.getTableCellRendererComponent(table, value,
                                 isSelected, false, row, column);
                         if (isSelected) {
                             comp.setBackground(selectionColor);
-                            comp.setForeground(Color.BLACK); 
+                            comp.setForeground(Color.BLACK);
                         } else {
                             if (row % 2 == 0) {
                                 comp.setBackground(Color.WHITE);
@@ -1136,7 +1134,7 @@ public class FiturPembelian extends javax.swing.JPanel {
         model.addColumn("Nama Supplier");
         model.addColumn("Nama Administrator");
     }
-    
+
     private void setPlaceholderField() {
         txt_idSupplier.setText("ID");
         txt_namaSupplier.setText("Nama");
@@ -1156,28 +1154,28 @@ public class FiturPembelian extends javax.swing.JPanel {
 
     private void getData(DefaultTableModel model) {
         model.setRowCount(0);
-        
+
         try {
-            String sql = "SELECT pembelian.id_pembelian, pembelian.total_beli, pembelian.total_harga, pembelian.tanggal_transaksi,\n" +
-                         "supplier.nama_supplier, user.nama\n" +
-                         "FROM pembelian\n" +
-                         "INNER JOIN supplier ON supplier.id_supplier = pembelian.id_supplier\n" +
-                         "INNER JOIN user ON user.id_user = pembelian.id_user ORDER BY pembelian.id_pembelian ASC";
-            try (PreparedStatement st = conn.prepareStatement(sql)){
+            String sql = "SELECT pembelian.id_pembelian, pembelian.total_beli, pembelian.total_harga, pembelian.tanggal_transaksi,\n"
+                    + "supplier.nama_supplier, user.nama\n"
+                    + "FROM pembelian\n"
+                    + "INNER JOIN supplier ON supplier.id_supplier = pembelian.id_supplier\n"
+                    + "INNER JOIN user ON user.id_user = pembelian.id_user ORDER BY pembelian.id_pembelian ASC";
+            try (PreparedStatement st = conn.prepareStatement(sql)) {
                 ResultSet rs = st.executeQuery();
-                
+
                 while (rs.next()) {
-                    String idPembelian         = rs.getString("id_pembelian");
-                    int totalBeli              = rs.getInt("total_beli");
-                    int totalHarga             = rs.getInt("total_harga");
-                    String tanggalTransaksi    = rs.getString("tanggal_transaksi");
-                    String namaSupplier       = rs.getString("nama_supplier");
-                    String namaKasir           = rs.getString("nama");
-                    
+                    String idPembelian = rs.getString("id_pembelian");
+                    int totalBeli = rs.getInt("total_beli");
+                    int totalHarga = rs.getInt("total_harga");
+                    String tanggalTransaksi = rs.getString("tanggal_transaksi");
+                    String namaSupplier = rs.getString("nama_supplier");
+                    String namaKasir = rs.getString("nama");
+
                     Object[] rowData = {
                         idPembelian,
                         totalBeli,
-                        formatRupiah(totalHarga), 
+                        formatRupiah(totalHarga),
                         tanggalTransaksi,
                         namaSupplier,
                         namaKasir
@@ -1186,10 +1184,10 @@ public class FiturPembelian extends javax.swing.JPanel {
                 }
             }
         } catch (SQLException e) {
-            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE,null,e);
+            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
         }
     }
-    
+
     private void setTabelModelDetail() {
         DefaultTableModel model = (DefaultTableModel) tbl_dataDetail.getModel();
         model.addColumn("ID Pembelian");
@@ -1200,47 +1198,47 @@ public class FiturPembelian extends javax.swing.JPanel {
         model.addColumn("Subtotal");
         model.addColumn("Status Pembayaran");
     }
-    
+
     private void getDataDetail(DefaultTableModel model, String id) {
         model.setRowCount(0);
-        
+
         try {
-            String sql = "SELECT detail_pembelian.id_pembelian, produk.id_produk, kategori.id_kategori, produk.nama_produk,\n" +
-                         "detail_pembelian.jumlah, detail_pembelian.subtotal, detail_pembelian.status_bayar\n" +
-                         "FROM detail_pembelian\n" +
-                         "INNER JOIN produk ON produk.id_produk = detail_pembelian.id_produk\n" +
-                         "INNER JOIN kategori ON kategori.id_kategori = produk.id_kategori\n" +
-                         "WHERE detail_pembelian.id_pembelian = '"+id+"'" +
-                         "ORDER BY detail_pembelian.id_pembelian ASC";
-            try (PreparedStatement st = conn.prepareStatement(sql)){
+            String sql = "SELECT detail_pembelian.id_pembelian, produk.id_produk, kategori.id_kategori, produk.nama_produk,\n"
+                    + "detail_pembelian.jumlah, detail_pembelian.subtotal, detail_pembelian.status_bayar\n"
+                    + "FROM detail_pembelian\n"
+                    + "INNER JOIN produk ON produk.id_produk = detail_pembelian.id_produk\n"
+                    + "INNER JOIN kategori ON kategori.id_kategori = produk.id_kategori\n"
+                    + "WHERE detail_pembelian.id_pembelian = '" + id + "'"
+                    + "ORDER BY detail_pembelian.id_pembelian ASC";
+            try (PreparedStatement st = conn.prepareStatement(sql)) {
                 ResultSet rs = st.executeQuery();
-                
-                 while (rs.next()) {
-                    String idPembelian         = rs.getString("id_pembelian");
-                    String idProduk            = rs.getString("id_produk");
-                    String idKategori           = rs.getString("id_kategori");
-                    String namaProduk          = rs.getString("nama_produk");
-                    int jumlahBeli             = rs.getInt("jumlah");
-                    int subtotal               = rs.getInt("subtotal");
-                    String statusPembayaran    = rs.getString("status_bayar");
-                            
+
+                while (rs.next()) {
+                    String idPembelian = rs.getString("id_pembelian");
+                    String idProduk = rs.getString("id_produk");
+                    String idKategori = rs.getString("id_kategori");
+                    String namaProduk = rs.getString("nama_produk");
+                    int jumlahBeli = rs.getInt("jumlah");
+                    int subtotal = rs.getInt("subtotal");
+                    String statusPembayaran = rs.getString("status_bayar");
+
                     Object[] rowData = {
                         idPembelian,
                         idProduk,
                         idKategori,
                         namaProduk,
                         jumlahBeli,
-                        formatRupiah(subtotal), 
+                        formatRupiah(subtotal),
                         statusPembayaran
                     };
                     model.addRow(rowData);
                 }
             }
         } catch (SQLException e) {
-            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE,null,e);
+            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
         }
     }
-    
+
     private void setTabelModelSementara() {
         DefaultTableModel model = (DefaultTableModel) tbl_dataSementara.getModel();
         model.addColumn("ID Produk");
@@ -1250,52 +1248,59 @@ public class FiturPembelian extends javax.swing.JPanel {
         model.addColumn("Jumlah Beli");
         model.addColumn("Subtotal");
     }
-    
+
     private void getDataSementara(DefaultTableModel model) {
         model.setRowCount(0);
-        
         try {
             String sql = "SELECT * FROM pn_sementara";
-            try (PreparedStatement st = conn.prepareStatement(sql)){
+            try (PreparedStatement st = conn.prepareStatement(sql)) {
                 ResultSet rs = st.executeQuery();
-                
                 while (rs.next()) {
-                    String idProduk            = rs.getString("id_produk");
-                    String namaProduk          = rs.getString("nama_produk");
-                    String satuanProduk        = rs.getString("satuan");
-                    int hargaBeli              = rs.getInt("harga");
-                    String jumlahBeli          = rs.getString("jumlah_beli");
-                    int subtotal               = rs.getInt("subtotal");
-                    
+                    String idProduk = rs.getString("id_produk");
+                    String namaProduk = rs.getString("nama_produk");
+                    String satuanProduk = rs.getString("satuan");
+                    int hargaBeli = rs.getInt("harga");
+                    String jumlahBeli = rs.getString("jumlah_beli");
+                    int subtotal = rs.getInt("subtotal");
+
+                    // PERBAIKAN: Hitung jumlah asli untuk refill galon
+                    int jumlahAsli = Integer.parseInt(jumlahBeli);
+                    if (namaProduk.toLowerCase().contains("refill")
+                            && satuanProduk.equals("Liter")
+                            && jumlahAsli % 19 == 0) {
+                        jumlahAsli = jumlahAsli / 19; // Kembalikan ke jumlah asli (19 ÷ 19 = 1)
+                    }
+
                     Object[] rowData = {
                         idProduk,
                         namaProduk,
-                        satuanProduk,       
-                        formatRupiah(hargaBeli), 
-                        jumlahBeli,
-                        formatRupiah(subtotal)  
+                        satuanProduk,
+                        formatRupiah(hargaBeli),
+                        jumlahBeli, // Tampilkan 19 liter di tabel
+                        formatRupiah(subtotal),
+                        jumlahAsli // Hidden column untuk edit (akan berisi 1)
                     };
                     model.addRow(rowData);
                 }
             }
         } catch (SQLException e) {
-            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE,null,e);
+            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
         }
     }
-    
-    private String setIDPembelian(){
+
+    private String setIDPembelian() {
         String urutan = null;
-        
+
         try {
-            String sql = "SELECT RIGHT(id_pembelian, 3) AS LastNumber " +
-                         "FROM pembelian " +
-                         "WHERE id_pembelian LIKE 'PM%' " +
-                         "ORDER BY id_pembelian DESC " +
-                         "LIMIT 1";
-            
+            String sql = "SELECT RIGHT(id_pembelian, 3) AS LastNumber "
+                    + "FROM pembelian "
+                    + "WHERE id_pembelian LIKE 'PM%' "
+                    + "ORDER BY id_pembelian DESC "
+                    + "LIMIT 1";
+
             PreparedStatement st = conn.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
-            
+
             if (rs.next()) {
                 String lastNumber = rs.getString("LastNumber");
                 int nextNumber = Integer.parseInt(lastNumber) + 1;
@@ -1303,17 +1308,17 @@ public class FiturPembelian extends javax.swing.JPanel {
             } else {
                 urutan = "PM001";
             }
-        
+
             rs.close();
             st.close();
-            
+
         } catch (SQLException e) {
-            java.util.logging.Logger.getLogger(FiturProduk.class.getName()).log(Level.SEVERE,null,e);
+            java.util.logging.Logger.getLogger(FiturProduk.class.getName()).log(Level.SEVERE, null, e);
             urutan = "PM001";
-        } 
+        }
         return urutan;
     }
-    
+
     private void setNumberinField() {
         KeyAdapter angkaSaja = new KeyAdapter() {
             @Override
@@ -1328,81 +1333,89 @@ public class FiturPembelian extends javax.swing.JPanel {
         txt_bayar.addKeyListener(angkaSaja);
         txt_kembalian.addKeyListener(angkaSaja);
     }
-    
+
     private void setSupplier() {
         boolean closable = true;
         DataSupplier supplier = new DataSupplier(null, closable);
         supplier.setVisible(true);
-        
+
         txt_idSupplier.setText(supplier.getIdSupplier());
         txt_namaSupplier.setText(supplier.getNamaSupplier());
         txt_alamatSupplier.setText(supplier.getAlamatSupplier());
         txt_teleponSupplier.setText(supplier.getTeleponSupplier());
-        
+
         txt_idSupplier.setEnabled(false);
         txt_namaSupplier.setEnabled(false);
         txt_alamatSupplier.setEnabled(false);
         txt_teleponSupplier.setEnabled(false);
     }
-    
+
     private void setProduk() {
         boolean closable = true;
         DataProdukPM produk = new DataProdukPM(null, closable);
         produk.setVisible(true);
-        
+
         txt_idProduk.setText(produk.getIdProduk());
         txt_namaProduk.setText(produk.getNamaProduk());
         txt_satuanProduk.setText(produk.getSatuanProduk());
         txt_hargaProduk.setText(produk.getHargaProduk());
-        
+
         txt_idProduk.setEnabled(false);
         txt_namaProduk.setEnabled(false);
         txt_satuanProduk.setEnabled(false);
         txt_hargaProduk.setEnabled(false);
+
+        // 🔍 Tambahan logika deteksi refill galon
+        String namaProduk = produk.getNamaProduk();
+        String satuan = produk.getSatuanProduk();
+
+        if (namaProduk != null && (namaProduk.equalsIgnoreCase("Refill Galon") || satuan.equalsIgnoreCase("liter"))) {
+            isRefillGalon = true;
+        } else {
+            isRefillGalon = false;
+        }
     }
-    
-    private void insertDataSementara() {
+
+    private void insertDataSementara(int jumlahAsli, int quantityTampil) {
         String idProduk = txt_idProduk.getText();
         String namaProduk = txt_namaProduk.getText();
         String satuanProduk = txt_satuanProduk.getText();
         String hargaBeli = txt_hargaProduk.getText();
-        String jumlahBeli = txt_jumlah.getText();
         String subtotal = txt_subtotal.getText();
         String metodeBayar = "NULL";
 
-        if(idProduk.isEmpty() || namaProduk.isEmpty() || satuanProduk.isEmpty() || 
-           hargaBeli.isEmpty() || jumlahBeli.isEmpty() || subtotal.isEmpty() || 
-           metodeBayar.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Semua kolom harus diisi !", 
-                                        "Validasi", JOptionPane.ERROR_MESSAGE);
+        if (idProduk.isEmpty() || namaProduk.isEmpty() || satuanProduk.isEmpty()
+                || hargaBeli.isEmpty() || subtotal.isEmpty() || metodeBayar.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Semua kolom harus diisi !",
+                    "Validasi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         try {
             String cleanHargaBeli = hargaBeli.replace("Rp.", "").replace(".", "").trim();
             String cleanSubtotal = subtotal.replace("Rp.", "").replace(".", "").trim();
-
             int hargaBeliInt = Integer.parseInt(cleanHargaBeli);
             int subtotalInt = Integer.parseInt(cleanSubtotal);
 
-            String sql = "INSERT INTO pn_sementara (id_produk, nama_produk, satuan, " +
-                        "harga, jumlah_beli, subtotal, metode_bayar) VALUES (?,?,?,?,?,?,?)";
-
+            String sql = "INSERT INTO pn_sementara (id_produk, nama_produk, satuan, "
+                    + "harga, jumlah_beli, subtotal, metode_bayar) VALUES (?,?,?,?,?,?,?)";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, idProduk);
             st.setString(2, namaProduk);
             st.setString(3, satuanProduk);
-            st.setInt(4, hargaBeliInt);   
-            st.setString(5, jumlahBeli);
-            st.setInt(6, subtotalInt);      
+            st.setInt(4, hargaBeliInt);
+
+            // PERBAIKAN: Gunakan quantityTampil untuk database (19 liter untuk refill galon)
+            st.setString(5, String.valueOf(quantityTampil));
+            st.setInt(6, subtotalInt);
             st.setString(7, metodeBayar);
 
             st.executeUpdate();
             getUpdateTotalHargaDanBeli();
             loadDataSementara();
 
-            if(JOptionPane.showConfirmDialog(this, "Mau Tambah Produk?", "Konfirmasi",
-               JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (JOptionPane.showConfirmDialog(this, "Mau Tambah Produk?", "Konfirmasi",
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 resetFormProduk();
                 txt_subtotal.setText("Rp.0");
                 txt_bayar.setText("Rp.0");
@@ -1416,28 +1429,36 @@ public class FiturPembelian extends javax.swing.JPanel {
         } catch (SQLException e) {
             Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Format angka tidak valid!", 
-                                        "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Format angka tidak valid!",
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    private void getSubtotal() {
-        try {
-            String jumlahBeliText = txt_jumlah.getText();
-            String hargaText = txt_hargaProduk.getText();
 
+// Method overload untuk backward compatibility
+    private void insertDataSementara() {
+        String jumlahBeli = txt_jumlah.getText();
+        try {
+            int jumlah = Integer.parseInt(jumlahBeli);
+            insertDataSementara(jumlah, jumlah); // Untuk produk biasa
+        } catch (NumberFormatException e) {
+            insertDataSementara(0, 0);
+        }
+    }
+
+    private void getSubtotal(int jumlahAsli) {
+        try {
+            String hargaText = txt_hargaProduk.getText();
             if (hargaText.isEmpty()) {
                 txt_subtotal.setText("Rp. 0");
                 getUpdateTotalHargaDanBeli();
                 return;
             }
-            
-            int jumlahBeli = Integer.parseInt(jumlahBeliText);
+
+            // Gunakan jumlahAsli untuk perhitungan harga, bukan dari txt_jumlah
             int hargaBeli = Integer.parseInt(hargaText);
-            int totalHarga = jumlahBeli * hargaBeli;
-            
+            int totalHarga = jumlahAsli * hargaBeli; // Hitung dengan jumlah asli
+
             txt_subtotal.setText(formatRupiah(totalHarga));
-            
             int row = tbl_dataSementara.getSelectedRow();
             if (row >= 0) {
                 tbl_dataSementara.setValueAt(totalHarga, row, 5); // Kolom 5 adalah kolom subtotal
@@ -1449,7 +1470,17 @@ public class FiturPembelian extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
+    private void getSubtotal() {
+        // Method lama untuk kompatibilitas, ambil dari txt_jumlah
+        try {
+            int jumlahBeli = Integer.parseInt(txt_jumlah.getText());
+            getSubtotal(jumlahBeli);
+        } catch (NumberFormatException e) {
+            getSubtotal(0);
+        }
+    }
+
     private String getTotalHarga() {
         int totalHarga = 0;
         String sql = "SELECT SUM(subtotal) AS total_harga FROM pn_sementara";
@@ -1468,10 +1499,10 @@ public class FiturPembelian extends javax.swing.JPanel {
         DecimalFormat formatter = (DecimalFormat) DecimalFormat.getInstance(new Locale("id", "ID"));
         return "Rp." + formatter.format(totalHarga);
     }
-    
+
     private int getTotalBeli() {
         int totalBeli = 0;
-        
+
         try {
             String sql = "SELECT SUM(jumlah_beli) AS total_beli FROM pn_sementara";
             try (PreparedStatement st = conn.prepareStatement(sql)) {
@@ -1481,11 +1512,11 @@ public class FiturPembelian extends javax.swing.JPanel {
                 }
             }
         } catch (SQLException e) {
-            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE,null,e);
+            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
         }
         return totalBeli;
     }
-    
+
     private void getPembayaran() {
         try {
             String bayarStr = txt_bayar.getText().replace("Rp.", "").replace(".", "").trim();
@@ -1495,8 +1526,8 @@ public class FiturPembelian extends javax.swing.JPanel {
             int totalHarga = Integer.parseInt(totalStr);
 
             if (bayar < totalHarga) {
-                JOptionPane.showMessageDialog(this, "Uang Anda Kurang!", 
-                    "Pembayaran Gagal", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Uang Anda Kurang!",
+                        "Pembayaran Gagal", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -1506,25 +1537,25 @@ public class FiturPembelian extends javax.swing.JPanel {
             txt_kembalian.setText("Rp." + formatter.format(kembalian));
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Format angka tidak valid!", 
-                "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Format angka tidak valid!",
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void getUpdateTotalHargaDanBeli() {
         String totalHarga = getTotalHarga();
         txt_totalHarga.setText(String.valueOf(totalHarga));
 
         int totalBeli = getTotalBeli();
-        lb_totalBeli.setText(String.valueOf(totalBeli));  
+        lb_totalBeli.setText(String.valueOf(totalBeli));
     }
-    
+
     private String formatRupiah(int amount) {
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
         return currencyFormat.format(amount).replace("Rp", "Rp.").replace(",00", "");
     }
 
-        private int parseRupiah(String rupiah) {
+    private int parseRupiah(String rupiah) {
         try {
             if (rupiah == null || rupiah.equals("Rp. 0")) {
                 return 0;
@@ -1547,7 +1578,7 @@ public class FiturPembelian extends javax.swing.JPanel {
             return 0;
         }
     }
-    
+
     private boolean cekIdSupplier(String idSupplier) {
         try {
             String sql = "SELECT id_supplier FROM supplier WHERE id_supplier = ?";
@@ -1556,14 +1587,14 @@ public class FiturPembelian extends javax.swing.JPanel {
             ResultSet rs = st.executeQuery();
             return rs.next();
         } catch (SQLException e) {
-            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE,null,e);
+            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
         }
         return false;
     }
-    
+
     private void insertData() {
         String idPembelian = txt_idPembelian.getText();
-        String totalBeli = lb_totalBeli.getText(); 
+        String totalBeli = lb_totalBeli.getText();
         String totalHarga = txt_totalHarga.getText();
         String idSupplier = txt_idSupplier.getText();
         Date tanggal = txt_tanggal.getDate();
@@ -1575,8 +1606,8 @@ public class FiturPembelian extends javax.swing.JPanel {
 
         String tanggalTransaksi = new SimpleDateFormat("yyyy-MM-dd").format(tanggal);
 
-        if (idPembelian.isEmpty() || totalBeli.isEmpty() || totalHarga.isEmpty() || 
-            tanggalTransaksi.isEmpty() || idSupplier.isEmpty()) {
+        if (idPembelian.isEmpty() || totalBeli.isEmpty() || totalHarga.isEmpty()
+                || tanggalTransaksi.isEmpty() || idSupplier.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Semua kolom harus diisi!", "Validasi", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -1584,16 +1615,16 @@ public class FiturPembelian extends javax.swing.JPanel {
         if (cekIdSupplier(idSupplier)) {
             try {
                 String cleanTotalHarga = totalHarga.replace("Rp.", "")
-                                                 .replace(".", "")
-                                                 .trim();
+                        .replace(".", "")
+                        .trim();
 
-                String sql = "INSERT INTO pembelian (id_pembelian, total_beli, total_harga, " + 
-                            "tanggal_transaksi, id_supplier, id_user) VALUES (?,?,?,?,?,?)";
+                String sql = "INSERT INTO pembelian (id_pembelian, total_beli, total_harga, "
+                        + "tanggal_transaksi, id_supplier, id_user) VALUES (?,?,?,?,?,?)";
 
                 PreparedStatement st = conn.prepareStatement(sql);
                 st.setString(1, idPembelian);
-                st.setInt(2, Integer.parseInt(totalBeli));         
-                st.setInt(3, Integer.parseInt(cleanTotalHarga));   
+                st.setInt(2, Integer.parseInt(totalBeli));
+                st.setInt(3, Integer.parseInt(cleanTotalHarga));
                 st.setString(4, tanggalTransaksi);
                 st.setString(5, idSupplier);
                 st.setString(6, userID);
@@ -1606,91 +1637,78 @@ public class FiturPembelian extends javax.swing.JPanel {
                 }
             } catch (SQLException e) {
                 Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
-                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), 
-                    "Database Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(),
+                        "Database Error", JOptionPane.ERROR_MESSAGE);
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Format angka tidak valid!", 
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Format angka tidak valid!",
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, "ID Supplier tidak ditemukan. Silakan periksa kembali!");
         }
     }
-    
+
     private void insertDataDetail() {
         String idPembelian = txt_idPembelian.getText();
-       
+
         try {
-            String sql = "INSERT INTO detail_pembelian (id_pembelian, id_produk, jumlah, subtotal, status_bayar) " +
-                         "SELECT ?, id_produk, jumlah_beli, subtotal, metode_bayar " +
-                         "FROM pn_sementara";
+            String sql = "INSERT INTO detail_pembelian (id_pembelian, id_produk, jumlah, subtotal, status_bayar) "
+                    + "SELECT ?, id_produk, jumlah_beli, subtotal, metode_bayar "
+                    + "FROM pn_sementara";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, idPembelian); // Set id_penjualan untuk semua produk
             st.executeUpdate();
             updateStokProduk();
         } catch (SQLException e) {
-            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE,null,e);
+            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
     private void dataTabelSementara() {
         int row = tbl_dataSementara.getSelectedRow();
-
         txt_idProduk.setEnabled(false);
         txt_namaProduk.setEnabled(false);
         txt_satuanProduk.setEnabled(false);
         txt_hargaProduk.setEnabled(false);
-        
+
         // Ambil data dari tabel sementara
         txt_idProduk.setText(tbl_dataSementara.getValueAt(row, 0).toString());
         txt_namaProduk.setText(tbl_dataSementara.getValueAt(row, 1).toString());
         txt_satuanProduk.setText(tbl_dataSementara.getValueAt(row, 2).toString());
         txt_hargaProduk.setText(tbl_dataSementara.getValueAt(row, 3).toString());
-        txt_jumlah.setText(tbl_dataSementara.getValueAt(row, 4).toString());
-        txt_subtotal.setText(tbl_dataSementara.getValueAt(row, 5).toString());
-        
-        txt_jumlah.requestFocus();
-    }
+
     
-    private void updateData() {
-        String idProduk = txt_idProduk.getText();
-        String jumlahBeli = txt_jumlah.getText(); 
-        String subtotal = txt_subtotal.getText();
+        String namaProduk = tbl_dataSementara.getValueAt(row, 1).toString();
+        String satuanProduk = tbl_dataSementara.getValueAt(row, 2).toString();
+        String jumlahBeli = tbl_dataSementara.getValueAt(row, 4).toString();
 
         
-        if(idProduk.isEmpty() || jumlahBeli.isEmpty() || subtotal.isEmpty()) {
+        int jumlahAsli = Integer.parseInt(jumlahBeli);
+
+        if (namaProduk.toLowerCase().contains("refill")
+                && satuanProduk.equals("Liter")
+                && jumlahAsli % 19 == 0) {
+            jumlahAsli = jumlahAsli / 19; // 19 ÷ 19 = 1
+            isRefillGalon = true; // 
+        } else {
+            isRefillGalon = false;
+        }
+
+        txt_jumlah.setText(String.valueOf(jumlahAsli)); // Tampilkan 1, bukan 19
+        txt_subtotal.setText(tbl_dataSementara.getValueAt(row, 5).toString());
+        txt_jumlah.requestFocus();
+    }
+
+    private void updateData() {
+        String idProduk = txt_idProduk.getText();
+        String jumlahBeli = txt_jumlah.getText();
+        String subtotal = txt_subtotal.getText();
+
+        if (idProduk.isEmpty() || jumlahBeli.isEmpty() || subtotal.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Semua kolom harus diisi !", "Validasi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        try {
-            String sql = "UPDATE pn_sementara SET jumlah_beli=?, subtotal=? WHERE id_produk=?";
-            PreparedStatement st = conn.prepareStatement(sql);
-            st.setString(1, jumlahBeli);
-            st.setString(2, subtotal);
-            st.setString(3, idProduk);
-            
-            int rowUpdated = st.executeUpdate();
-            if(rowUpdated > 0){
-                JOptionPane.showMessageDialog(this, "Data Berhasil Diperbarui");
-                resetFormProduk();
-                loadDataSementara();
-            }
-        } catch (SQLException e) {
-            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE,null,e);
-        }
-    }
-    
-    private void updateDataSementara() {
-        String idProduk = txt_idProduk.getText();
-        String jumlahBeli = txt_jumlah.getText(); 
-        String subtotal = txt_subtotal.getText(); 
-        
-        if(idProduk.isEmpty() || jumlahBeli.isEmpty() || jumlahBeli.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Total Harga dan Total Beli berhasil diperbarui !", "Message", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-        
+
         try {
             String sql = "UPDATE pn_sementara SET jumlah_beli=?, subtotal=? WHERE id_produk=?";
             PreparedStatement st = conn.prepareStatement(sql);
@@ -1699,13 +1717,41 @@ public class FiturPembelian extends javax.swing.JPanel {
             st.setString(3, idProduk);
 
             int rowUpdated = st.executeUpdate();
-            if(rowUpdated > 0){
+            if (rowUpdated > 0) {
                 JOptionPane.showMessageDialog(this, "Data Berhasil Diperbarui");
                 resetFormProduk();
                 loadDataSementara();
             }
         } catch (SQLException e) {
-            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE,null,e);
+            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    private void updateDataSementara() {
+        String idProduk = txt_idProduk.getText();
+        String jumlahBeli = txt_jumlah.getText();
+        String subtotal = txt_subtotal.getText();
+
+        if (idProduk.isEmpty() || jumlahBeli.isEmpty() || jumlahBeli.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Total Harga dan Total Beli berhasil diperbarui !", "Message", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        try {
+            String sql = "UPDATE pn_sementara SET jumlah_beli=?, subtotal=? WHERE id_produk=?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, jumlahBeli);
+            st.setString(2, subtotal);
+            st.setString(3, idProduk);
+
+            int rowUpdated = st.executeUpdate();
+            if (rowUpdated > 0) {
+                JOptionPane.showMessageDialog(this, "Data Berhasil Diperbarui");
+                resetFormProduk();
+                loadDataSementara();
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
@@ -1739,75 +1785,75 @@ public class FiturPembelian extends javax.swing.JPanel {
         resetFormProduk();
         loadDataSementara();
     }
-    
+
     private void deleteDataSementara() {
         try {
             String sql = "DELETE FROM pn_sementara";
-                try(PreparedStatement st = conn.prepareStatement(sql)){
-                    st.executeUpdate();
-                }
-        } catch(Exception e) {
-            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE,null,e);
+            try (PreparedStatement st = conn.prepareStatement(sql)) {
+                st.executeUpdate();
+            }
+        } catch (Exception e) {
+            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
     private void searchData() {
         String kataKunci = txt_search.getText();
-        
+
         DefaultTableModel model = (DefaultTableModel) tbl_data.getModel();
         model.setRowCount(0);
-        
+
         try {
-            String sql = "SELECT pembelian.id_pembelian, pembelian.total_beli, pembelian.total_harga, pembelian.tanggal_transaksi,\n" +
-                         "supplier.nama_supplier, user.nama\n" +
-                         "FROM pembelian\n" +
-                         "INNER JOIN supplier ON supplier.id_supplier = pembelian.id_supplier\n" +
-                         "INNER JOIN user ON user.id_user = pembelian.id_user\n" +
-                         "WHERE pembelian.id_pembelian LIKE ? OR supplier.nama_supplier LIKE ?";
-            
-            try (PreparedStatement st = conn.prepareStatement(sql)){
+            String sql = "SELECT pembelian.id_pembelian, pembelian.total_beli, pembelian.total_harga, pembelian.tanggal_transaksi,\n"
+                    + "supplier.nama_supplier, user.nama\n"
+                    + "FROM pembelian\n"
+                    + "INNER JOIN supplier ON supplier.id_supplier = pembelian.id_supplier\n"
+                    + "INNER JOIN user ON user.id_user = pembelian.id_user\n"
+                    + "WHERE pembelian.id_pembelian LIKE ? OR supplier.nama_supplier LIKE ?";
+
+            try (PreparedStatement st = conn.prepareStatement(sql)) {
                 st.setString(1, "%" + kataKunci + "%");
                 st.setString(2, "%" + kataKunci + "%");
                 ResultSet rs = st.executeQuery();
-                
+
                 while (rs.next()) {
-                    String idPembelian         = rs.getString("id_pembelian");
-                    int totalBeli              = rs.getInt("total_beli");
-                    int totalHarga             = rs.getInt("total_harga");
-                    String tanggalTransaksi    = rs.getString("tanggal_transaksi");
-                    String namaSupplier        = rs.getString("nama_supplier");
-                    String namaKasir           = rs.getString("nama");
-                    
+                    String idPembelian = rs.getString("id_pembelian");
+                    int totalBeli = rs.getInt("total_beli");
+                    int totalHarga = rs.getInt("total_harga");
+                    String tanggalTransaksi = rs.getString("tanggal_transaksi");
+                    String namaSupplier = rs.getString("nama_supplier");
+                    String namaKasir = rs.getString("nama");
+
                     Object[] rowData = {idPembelian, totalBeli, totalHarga, tanggalTransaksi, namaSupplier, namaKasir};
                     model.addRow(rowData);
                 }
             }
         } catch (SQLException e) {
-            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE,null,e);
+            Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
         }
     }
-    
+
     private void updateStokProduk() {
         try {
-            String sql = "UPDATE produk " +
-                         "JOIN detail_pembelian ON produk.id_produk = detail_pembelian.id_produk " +
-                         "SET produk.stok = produk.stok + detail_pembelian.jumlah " +
-                         "WHERE detail_pembelian.id_pembelian = ?"; 
+            String sql = "UPDATE produk "
+                    + "JOIN detail_pembelian ON produk.id_produk = detail_pembelian.id_produk "
+                    + "SET produk.stok = produk.stok + detail_pembelian.jumlah "
+                    + "WHERE detail_pembelian.id_pembelian = ?";
 
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, txt_idPembelian.getText()); // Ambil ID Pembelian dari form
 
             int rowsUpdated = st.executeUpdate();
-            
+
         } catch (SQLException e) {
             Logger.getLogger(FiturPembelian.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(this, "Gagal memperbarui stok produk.");
         }
     }
-    
+
     private void setButtonIcons() {
-        int iconSize = 18;  
-        Color iconColor = Color.WHITE;  
+        int iconSize = 18;
+        Color iconColor = Color.WHITE;
 
         btn_add.setIcon(createSVGIcon("icons/add.svg", iconSize, iconColor));
         btn_delete.setIcon(createSVGIcon("icons/delete.svg", iconSize, iconColor));
@@ -1822,5 +1868,5 @@ public class FiturPembelian extends javax.swing.JPanel {
         icon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> color));
         return icon;
     }
-    
+
 }
