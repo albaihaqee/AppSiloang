@@ -50,6 +50,7 @@ public class FiturPenjualan extends javax.swing.JPanel {
         setTabelModelSementara();
         loadData();
         loadDataSementara();
+        setNumberinField();
         actionButton();
         setupEventListener();
         setPlaceholderField();
@@ -1493,6 +1494,23 @@ public class FiturPenjualan extends javax.swing.JPanel {
         return urutan;
     }
     
+    private void setNumberinField() {
+        KeyAdapter angkaSaja = new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (!Character.isDigit(e.getKeyChar())) {
+                    e.consume(); // Abaikan karakter non-angka
+                }
+            }
+        };
+        txt_subtotal.addKeyListener(angkaSaja);
+        txt_intDiskon.addKeyListener(angkaSaja);
+        txt_diskon.addKeyListener(angkaSaja);
+        txt_totalHarga.addKeyListener(angkaSaja);
+        txt_bayar.addKeyListener(angkaSaja);
+        txt_kembalian.addKeyListener(angkaSaja);
+    }
+    
     private void setPelanggan() {
         boolean closable = true;
         DataPelanggan pelanggan = new DataPelanggan(null, closable);
@@ -1950,6 +1968,7 @@ public class FiturPenjualan extends javax.swing.JPanel {
                     txt_kembalian.setText("Rp.0");
                 } else {
                     txt_subtotal.setText("Rp." + formatRupiah(total));
+                    setDiskonOtomatis();
                     if (!txt_intDiskon.getText().trim().isEmpty()) {
                         hitungDiskon();
                     } else {
@@ -1985,6 +2004,44 @@ public class FiturPenjualan extends javax.swing.JPanel {
             }
         } catch (NumberFormatException e) {
             txt_kembalian.setText("Rp.0");
+        }
+    }
+    
+    private void setDiskonOtomatis() {
+        try {
+            String subtotalText = txt_subtotal.getText().replace("Rp.", "").replace(".", "").trim();
+            double subtotal = Double.parseDouble(subtotalText);
+
+            if (subtotal > 200000) {
+                txt_intDiskon.setText("10");
+            } else if (subtotal > 100000) {
+                txt_intDiskon.setText("5");
+            } else if (subtotal > 50000) {
+                txt_intDiskon.setText("2");
+            } else {
+                txt_intDiskon.setText("0");
+            }
+        } catch (NumberFormatException e) {
+            txt_intDiskon.setText("0");
+        }
+    }
+    
+    private void addPointPelanggan(String idPelanggan) {
+        if (idPelanggan == null || idPelanggan.isEmpty()) {
+            return;
+        }
+
+        String sql = "UPDATE pelanggan SET point = point + 1 WHERE id_pelanggan = ?";
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setString(1, idPelanggan);
+            int result = st.executeUpdate();
+            if (result > 0) {
+                System.out.println("Point pelanggan berhasil ditambah.");
+            } else {
+                System.out.println("Gagal menambah point, ID pelanggan tidak ditemukan.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(FiturPenjualan.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -2453,6 +2510,7 @@ public class FiturPenjualan extends javax.swing.JPanel {
                     insertDataDetail(idPenjualan); 
                     conn.commit();
 
+                    addPointPelanggan(idPelangganTerpilih);
                     
                     resetForm();
                     resetFormProduk();

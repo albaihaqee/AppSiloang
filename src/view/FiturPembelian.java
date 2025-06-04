@@ -18,6 +18,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -44,6 +45,7 @@ public class FiturPembelian extends javax.swing.JPanel {
         setTabelModelSementara();
         loadData();
         loadDataSementara();
+        setNumberinField();
         actionButton();
         setPlaceholderField();
         setButtonIcons();
@@ -1310,6 +1312,21 @@ public class FiturPembelian extends javax.swing.JPanel {
             urutan = "PM001";
         } 
         return urutan;
+    }
+    
+    private void setNumberinField() {
+        KeyAdapter angkaSaja = new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (!Character.isDigit(e.getKeyChar())) {
+                    e.consume(); // Abaikan karakter non-angka
+                }
+            }
+        };
+        txt_jumlah.addKeyListener(angkaSaja);
+        txt_subtotal.addKeyListener(angkaSaja);
+        txt_bayar.addKeyListener(angkaSaja);
+        txt_kembalian.addKeyListener(angkaSaja);
     }
     
     private void setSupplier() {

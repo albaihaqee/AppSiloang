@@ -91,7 +91,7 @@ public class FiturDashboard extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        lb_jumlahProduk = new javax.swing.JLabel();
+        lb_tukarPoint = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -99,7 +99,8 @@ public class FiturDashboard extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        lb_totalTransaksi = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        lb_pendHariIni = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
@@ -112,7 +113,7 @@ public class FiturDashboard extends javax.swing.JPanel {
         jLabel9 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
-        lb_jumlahPelanggan = new javax.swing.JLabel();
+        lb_pnjHariIni = new javax.swing.JLabel();
         pn_chart = new javax.swing.JPanel();
         pn_ringchart = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -169,16 +170,16 @@ public class FiturDashboard extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        lb_jumlahProduk.setFont(new java.awt.Font("SansSerif", 1, 24)); // NOI18N
-        lb_jumlahProduk.setText("0");
+        lb_tukarPoint.setFont(new java.awt.Font("SansSerif", 1, 24)); // NOI18N
+        lb_tukarPoint.setText("0");
 
         jLabel8.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(255, 102, 0));
-        jLabel8.setText("Jumlah");
+        jLabel8.setText("Tukar");
 
         jLabel15.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(255, 102, 0));
-        jLabel15.setText("Produk");
+        jLabel15.setText("Point");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -188,10 +189,12 @@ public class FiturDashboard extends javax.swing.JPanel {
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel15)
-                    .addComponent(lb_jumlahProduk))
-                .addContainerGap(77, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(lb_tukarPoint)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,7 +204,7 @@ public class FiturDashboard extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addComponent(jLabel15)
                 .addGap(10, 10, 10)
-                .addComponent(lb_jumlahProduk)
+                .addComponent(lb_tukarPoint)
                 .addContainerGap(10, Short.MAX_VALUE))
             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -232,14 +235,17 @@ public class FiturDashboard extends javax.swing.JPanel {
 
         jLabel10.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(51, 153, 255));
-        jLabel10.setText("Total");
+        jLabel10.setText("Pendapatan");
 
         jLabel11.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(51, 153, 255));
-        jLabel11.setText("Transaksi");
+        jLabel11.setText("Hari Ini");
 
-        lb_totalTransaksi.setFont(new java.awt.Font("SansSerif", 1, 24)); // NOI18N
-        lb_totalTransaksi.setText("0");
+        jLabel18.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel18.setText("Rp.");
+
+        lb_pendHariIni.setFont(new java.awt.Font("SansSerif", 1, 24)); // NOI18N
+        lb_pendHariIni.setText("0");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -247,12 +253,19 @@ public class FiturDashboard extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel11)
-                    .addComponent(lb_totalTransaksi))
-                .addGap(0, 63, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel18)
+                        .addGap(3, 3, 3)
+                        .addComponent(lb_pendHariIni)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,9 +275,14 @@ public class FiturDashboard extends javax.swing.JPanel {
                 .addComponent(jLabel10)
                 .addGap(0, 0, 0)
                 .addComponent(jLabel11)
-                .addGap(10, 10, 10)
-                .addComponent(lb_totalTransaksi)
-                .addGap(10, 10, 10))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(13, 13, 13)
+                        .addComponent(jLabel18))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addComponent(lb_pendHariIni, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
@@ -302,7 +320,7 @@ public class FiturDashboard extends javax.swing.JPanel {
         lb_totalPemasukan.setFont(new java.awt.Font("SansSerif", 1, 24)); // NOI18N
         lb_totalPemasukan.setText("0");
 
-        jLabel17.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        jLabel17.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel17.setText("Rp.");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -313,15 +331,18 @@ public class FiturDashboard extends javax.swing.JPanel {
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel12)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                            .addGap(1, 1, 1)
-                            .addComponent(jLabel17)
-                            .addGap(3, 3, 3)
-                            .addComponent(lb_totalPemasukan))
-                        .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(50, 50, 50))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                                .addGap(1, 1, 1)
+                                .addComponent(jLabel17)
+                                .addGap(3, 3, 3)
+                                .addComponent(lb_totalPemasukan))
+                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(50, 50, 50))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -367,14 +388,14 @@ public class FiturDashboard extends javax.swing.JPanel {
 
         jLabel14.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(102, 204, 0));
-        jLabel14.setText("Jumlah");
+        jLabel14.setText("Penjualan");
 
         jLabel16.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel16.setForeground(new java.awt.Color(102, 204, 0));
-        jLabel16.setText("Pelanggan");
+        jLabel16.setText("Hari Ini");
 
-        lb_jumlahPelanggan.setFont(new java.awt.Font("SansSerif", 1, 24)); // NOI18N
-        lb_jumlahPelanggan.setText("0");
+        lb_pnjHariIni.setFont(new java.awt.Font("SansSerif", 1, 24)); // NOI18N
+        lb_pnjHariIni.setText("0");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -384,10 +405,12 @@ public class FiturDashboard extends javax.swing.JPanel {
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel14)
-                    .addComponent(jLabel16)
-                    .addComponent(lb_jumlahPelanggan))
-                .addGap(0, 56, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(lb_pnjHariIni)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -398,7 +421,7 @@ public class FiturDashboard extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addComponent(jLabel16)
                 .addGap(10, 10, 10)
-                .addComponent(lb_jumlahPelanggan)
+                .addComponent(lb_pnjHariIni)
                 .addGap(10, 10, 10))
         );
 
@@ -524,6 +547,7 @@ public class FiturDashboard extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -545,10 +569,10 @@ public class FiturDashboard extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel lb_dashboard;
-    private javax.swing.JLabel lb_jumlahPelanggan;
-    private javax.swing.JLabel lb_jumlahProduk;
+    private javax.swing.JLabel lb_pendHariIni;
+    private javax.swing.JLabel lb_pnjHariIni;
     private javax.swing.JLabel lb_totalPemasukan;
-    private javax.swing.JLabel lb_totalTransaksi;
+    private javax.swing.JLabel lb_tukarPoint;
     private javax.swing.JPanel pn_chart;
     private javax.swing.JPanel pn_ringchart;
     private javax.swing.JTable tbl_data;
@@ -556,40 +580,46 @@ public class FiturDashboard extends javax.swing.JPanel {
 
     private void tampilDashboard() {
         try {
-            String sqlProduk = "SELECT COUNT(*) AS jumlah_produk FROM produk";
-            PreparedStatement st = conn.prepareStatement(sqlProduk);
+            // SQL untuk menampilkan jumlah transaksi yang menggunakan point (alternatif)
+            String sqlTukarPoint = "SELECT COUNT(*) AS jumlah_tukar_point \n" +
+                                   "FROM detail_penjualan \n" +
+                                   "WHERE metode_bayar = 'Point'";
+            PreparedStatement st = conn.prepareStatement(sqlTukarPoint);
             ResultSet rs = st.executeQuery();
-
             if (rs.next()) {
-                int jumlahProduk = rs.getInt("jumlah_produk");
-                lb_jumlahProduk.setText(String.valueOf(jumlahProduk));
+                int jumlahTukarPoint = rs.getInt("jumlah_tukar_point");
+                lb_tukarPoint.setText(String.valueOf(jumlahTukarPoint));
             }
 
-            String sqlPelanggan = "SELECT COUNT(*) AS jumlah_pelanggan FROM pelanggan";
-            PreparedStatement stm = conn.prepareStatement(sqlPelanggan);
+            // SQL untuk menampilkan total penjualan hari ini (COUNT id penjualan hari ini)
+            String sqlPenjualan = "SELECT COUNT(*) AS penjualan_hari_ini " +
+                                 "FROM penjualan WHERE DATE(tanggal_transaksi) = CURDATE()";
+            PreparedStatement stm = conn.prepareStatement(sqlPenjualan);
             ResultSet set = stm.executeQuery();
-
             if (set.next()) {
-                int jumlahPelanggan = set.getInt("jumlah_pelanggan");
-                lb_jumlahPelanggan.setText(String.valueOf(jumlahPelanggan));
+                int penjualanHariIni = set.getInt("penjualan_hari_ini");
+                lb_pnjHariIni.setText(String.valueOf(penjualanHariIni));
             }
 
-            String sqlPenjualan = "SELECT COUNT(*) AS total_transaksi FROM penjualan";
-            PreparedStatement pst = conn.prepareStatement(sqlPenjualan);
+            // SQL untuk menampilkan total pendapatan hari ini (SUM total_harga hari ini)
+            String sqlPendapatan = "SELECT COALESCE(SUM(total_harga), 0) AS pendapatan_hari_ini " +
+                                  "FROM penjualan WHERE DATE(tanggal_transaksi) = CURDATE()";
+            PreparedStatement pst = conn.prepareStatement(sqlPendapatan);
             ResultSet rst = pst.executeQuery();
-
             if (rst.next()) {
-                int totalTransaksi = rst.getInt("total_transaksi");
-                lb_totalTransaksi.setText(String.valueOf(totalTransaksi));
+                int pendapatanHariIni = rst.getInt("pendapatan_hari_ini");
+                DecimalFormat formatter = new DecimalFormat("#,###");
+                String formattedPendapatan = formatter.format(pendapatanHariIni);
+                lb_pendHariIni.setText(formattedPendapatan);
             }
 
-            String sqlPemasukan = "SELECT SUM(laba_kotor) AS total_laba_kotor "
-                    + "FROM (SELECT DATE_FORMAT(tanggal_transaksi, '%b') AS bulan, "
-                    + "SUM(CASE WHEN jenis_transaksi = 'penjualan' THEN total_harga ELSE -total_harga END) AS laba_kotor "
-                    + "FROM (SELECT tanggal_transaksi, total_harga, 'penjualan' AS jenis_transaksi FROM penjualan "
-                    + "UNION ALL SELECT tanggal_transaksi, total_harga, 'pembelian' AS jenis_transaksi FROM pembelian) "
-                    + "AS gabungan WHERE YEAR(tanggal_transaksi) = YEAR(CURDATE()) GROUP BY bulan) AS laba_per_bulan";
-
+            // SQL untuk total pemasukan (tetap sama)
+            String sqlPemasukan = "SELECT SUM(laba_kotor) AS total_laba_kotor " +
+                                 "FROM (SELECT DATE_FORMAT(tanggal_transaksi, '%b') AS bulan, " +
+                                 "SUM(CASE WHEN jenis_transaksi = 'penjualan' THEN total_harga ELSE -total_harga END) AS laba_kotor " +
+                                 "FROM (SELECT tanggal_transaksi, total_harga, 'penjualan' AS jenis_transaksi FROM penjualan " +
+                                 "UNION ALL SELECT tanggal_transaksi, total_harga, 'pembelian' AS jenis_transaksi FROM pembelian) " +
+                                 "AS gabungan WHERE YEAR(tanggal_transaksi) = YEAR(CURDATE()) GROUP BY bulan) AS laba_per_bulan";
             PreparedStatement pstm = conn.prepareStatement(sqlPemasukan);
             ResultSet res = pstm.executeQuery();
             if (res.next()) {
@@ -598,6 +628,7 @@ public class FiturDashboard extends javax.swing.JPanel {
                 String formattedPemasukan = formatter.format(totalPemasukan);
                 lb_totalPemasukan.setText(formattedPemasukan);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error saat menampilkan dashboard: " + e.getMessage());
@@ -1195,15 +1226,15 @@ public class FiturDashboard extends javax.swing.JPanel {
     private void setWhiteSidebarIcons() {
         int iconSize = 35; // Ukuran ikon 40x40 piksel
 
-            FlatSVGIcon jmlProdukIcon = new FlatSVGIcon("icons/jmlProduk.svg");
+            FlatSVGIcon jmlProdukIcon = new FlatSVGIcon("icons/redeemPoint.svg");
             jmlProdukIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.WHITE));
             jLabel5.setIcon(jmlProdukIcon.derive(iconSize, iconSize));
 
-            FlatSVGIcon jmlPelanggan = new FlatSVGIcon("icons/jmlPelanggan.svg");
+            FlatSVGIcon jmlPelanggan = new FlatSVGIcon("icons/pnjToday.svg");
             jmlPelanggan.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.WHITE));
             jLabel9.setIcon(jmlPelanggan.derive(iconSize, iconSize));
 
-            FlatSVGIcon totTransaksiIcon = new FlatSVGIcon("icons/totalTransaksi.svg");
+            FlatSVGIcon totTransaksiIcon = new FlatSVGIcon("icons/pendToday.svg");
             totTransaksiIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.WHITE));
             jLabel6.setIcon(totTransaksiIcon.derive(iconSize, iconSize));
 

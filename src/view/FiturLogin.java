@@ -14,7 +14,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class FiturLogin extends javax.swing.JFrame {
 
@@ -25,6 +27,7 @@ public class FiturLogin extends javax.swing.JFrame {
         initComponents();
         conn = Koneksi.getConnection();
         setActionButton();
+        isiLoginJikaTersimpan();
         setBlueSidebarIcons();
         
         lb_hidePassword.setVisible(false);
@@ -78,7 +81,7 @@ public class FiturLogin extends javax.swing.JFrame {
         lb_hidePassword = new javax.swing.JLabel();
         lb_showPassword = new javax.swing.JLabel();
         tf_password = new javax.swing.JPasswordField();
-        bt_checkBox = new javax.swing.JCheckBox();
+        cb_rememberMe = new javax.swing.JCheckBox();
         bt_login = new javax.swing.JButton();
         lb_dontHave = new javax.swing.JLabel();
         lb_register = new javax.swing.JLabel();
@@ -164,12 +167,12 @@ public class FiturLogin extends javax.swing.JFrame {
         tf_password.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         right.add(tf_password, new org.netbeans.lib.awtextra.AbsoluteConstraints(84, 263, 230, 40));
 
-        bt_checkBox.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        bt_checkBox.setForeground(new java.awt.Color(255, 255, 255));
-        bt_checkBox.setText("Remember me");
-        bt_checkBox.setBorder(null);
-        bt_checkBox.setContentAreaFilled(false);
-        right.add(bt_checkBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(82, 310, -1, -1));
+        cb_rememberMe.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        cb_rememberMe.setForeground(new java.awt.Color(255, 255, 255));
+        cb_rememberMe.setText("Remember me");
+        cb_rememberMe.setBorder(null);
+        cb_rememberMe.setContentAreaFilled(false);
+        right.add(cb_rememberMe, new org.netbeans.lib.awtextra.AbsoluteConstraints(82, 310, -1, -1));
 
         bt_login.setBackground(new java.awt.Color(28, 179, 228));
         bt_login.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
@@ -234,8 +237,8 @@ public class FiturLogin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox bt_checkBox;
     private javax.swing.JButton bt_login;
+    private javax.swing.JCheckBox cb_rememberMe;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lb_dontHave;
@@ -408,6 +411,7 @@ public class FiturLogin extends javax.swing.JFrame {
                         MenuUtama mn = new MenuUtama(userID);
                         mn.setVisible(true);
                         JOptionPane.showMessageDialog(null, "Selamat Datang, " + userName + "! Anda masuk sebagai Admin.");
+                        simpanLoginJikaDipilih(username, password);
                     } else if (level.equalsIgnoreCase("Kasir")) {
                         MenuUtamaKasir mnk = new MenuUtamaKasir(userID);
                         mnk.setVisible(true);
@@ -424,6 +428,27 @@ public class FiturLogin extends javax.swing.JFrame {
         }
     }
     
+    private void simpanLoginJikaDipilih(String username, String password) {
+        Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
+        if (cb_rememberMe.isSelected()) {
+            prefs.put("username", username);
+            prefs.put("password", password); // Sementara plaintext (bisa diupgrade ke hash)
+        } else {
+            prefs.remove("username");
+            prefs.remove("password");
+        }
+    }
+
+    private void isiLoginJikaTersimpan() {
+        Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
+        String savedUsername = prefs.get("username", "");
+        String savedPassword = prefs.get("password", "");
+
+        tf_username.setText(savedUsername);
+        tf_password.setText(savedPassword);
+        cb_rememberMe.setSelected(!savedUsername.isEmpty());
+    }
+
     private void setBlueSidebarIcons() {
         int iconSize = 15; // Ukuran ikon 20x20 piksel
 

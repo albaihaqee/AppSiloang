@@ -3,6 +3,8 @@ package view;
 import Config.Koneksi;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +12,7 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 public class FiturRegister extends javax.swing.JFrame {
-    
+
     private Connection conn;
     private PreparedStatement st;
     private ResultSet rs;
@@ -18,9 +20,10 @@ public class FiturRegister extends javax.swing.JFrame {
     public FiturRegister() {
         initComponents();
         conn = Koneksi.getConnection();
+        setAngkaDanHuruf();
         setBlueSidebarIcons();
         lb_hidePassword.setVisible(false);
-        
+
         logo.setIcon(new FlatSVGIcon("icons/siloang.svg", logo.getWidth(), logo.getHeight()));
     }
 
@@ -36,14 +39,16 @@ public class FiturRegister extends javax.swing.JFrame {
         lb_createAccount = new javax.swing.JLabel();
         lb_already = new javax.swing.JLabel();
         lb_fullName = new javax.swing.JLabel();
-        tf_nama = new javax.swing.JTextField();
+        tf_rfid = new javax.swing.JTextField();
         lb_email = new javax.swing.JLabel();
-        tf_email = new javax.swing.JTextField();
+        tf_username = new javax.swing.JTextField();
         lb_hidePassword = new javax.swing.JLabel();
         lb_showPassword = new javax.swing.JLabel();
         lb_password = new javax.swing.JLabel();
         tf_password = new javax.swing.JPasswordField();
         bt_signUp = new javax.swing.JButton();
+        tf_nama = new javax.swing.JTextField();
+        lb_email1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("REGISTER - Aplikasi Desktop SiLoang");
@@ -94,29 +99,29 @@ public class FiturRegister extends javax.swing.JFrame {
         lb_createAccount.setForeground(new java.awt.Color(255, 255, 255));
         lb_createAccount.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lb_createAccount.setText("Create new account");
-        bg_right.add(lb_createAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 400, -1));
+        bg_right.add(lb_createAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 24, 400, 50));
 
         lb_already.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         lb_already.setForeground(new java.awt.Color(255, 255, 255));
         lb_already.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lb_already.setText("Already registered? Login");
-        bg_right.add(lb_already, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 100, 400, -1));
+        bg_right.add(lb_already, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 66, 400, 20));
 
         lb_fullName.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         lb_fullName.setForeground(new java.awt.Color(255, 255, 255));
         lb_fullName.setText("Full Name");
-        bg_right.add(lb_fullName, new org.netbeans.lib.awtextra.AbsoluteConstraints(84, 158, -1, -1));
+        bg_right.add(lb_fullName, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, 80, -1));
 
-        tf_nama.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        bg_right.add(tf_nama, new org.netbeans.lib.awtextra.AbsoluteConstraints(84, 180, 230, 40));
+        tf_rfid.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        bg_right.add(tf_rfid, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 350, 220, 40));
 
         lb_email.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         lb_email.setForeground(new java.awt.Color(255, 255, 255));
-        lb_email.setText("Username");
-        bg_right.add(lb_email, new org.netbeans.lib.awtextra.AbsoluteConstraints(84, 225, -1, -1));
+        lb_email.setText("RFID");
+        bg_right.add(lb_email, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 330, 40, -1));
 
-        tf_email.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        bg_right.add(tf_email, new org.netbeans.lib.awtextra.AbsoluteConstraints(84, 247, 230, 40));
+        tf_username.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        bg_right.add(tf_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 210, 220, 40));
 
         lb_hidePassword.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lb_hidePassword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icon_eyeVisible.png"))); // NOI18N
@@ -125,7 +130,7 @@ public class FiturRegister extends javax.swing.JFrame {
                 lb_hidePasswordMouseClicked(evt);
             }
         });
-        bg_right.add(lb_hidePassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(272, 315, 40, 40));
+        bg_right.add(lb_hidePassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 280, 40, 40));
 
         lb_showPassword.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lb_showPassword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icon_eyeDetector.png"))); // NOI18N
@@ -134,15 +139,15 @@ public class FiturRegister extends javax.swing.JFrame {
                 lb_showPasswordMouseClicked(evt);
             }
         });
-        bg_right.add(lb_showPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(272, 315, 40, 40));
+        bg_right.add(lb_showPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 280, 40, 40));
 
         lb_password.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         lb_password.setForeground(new java.awt.Color(255, 255, 255));
         lb_password.setText("Password");
-        bg_right.add(lb_password, new org.netbeans.lib.awtextra.AbsoluteConstraints(84, 293, -1, -1));
+        bg_right.add(lb_password, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 260, 60, -1));
 
         tf_password.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        bg_right.add(tf_password, new org.netbeans.lib.awtextra.AbsoluteConstraints(84, 315, 230, 40));
+        bg_right.add(tf_password, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 280, 220, 40));
 
         bt_signUp.setBackground(new java.awt.Color(28, 179, 228));
         bt_signUp.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
@@ -153,7 +158,15 @@ public class FiturRegister extends javax.swing.JFrame {
                 bt_signUpActionPerformed(evt);
             }
         });
-        bg_right.add(bt_signUp, new org.netbeans.lib.awtextra.AbsoluteConstraints(84, 385, 230, 40));
+        bg_right.add(bt_signUp, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 410, 220, 40));
+
+        tf_nama.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        bg_right.add(tf_nama, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 140, 220, 40));
+
+        lb_email1.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        lb_email1.setForeground(new java.awt.Color(255, 255, 255));
+        lb_email1.setText("Username");
+        bg_right.add(lb_email1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 190, 60, -1));
 
         jPanel1.add(bg_right);
         bg_right.setBounds(400, 0, 400, 500);
@@ -182,7 +195,7 @@ public class FiturRegister extends javax.swing.JFrame {
     private void lb_showPasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lb_showPasswordMouseClicked
         lb_showPassword.setVisible(false);
         lb_hidePassword.setVisible(true);
-        tf_password.setEchoChar((char)0);
+        tf_password.setEchoChar((char) 0);
     }//GEN-LAST:event_lb_showPasswordMouseClicked
 
     private void bt_signUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_signUpActionPerformed
@@ -240,26 +253,64 @@ public class FiturRegister extends javax.swing.JFrame {
     private javax.swing.JLabel lb_already;
     private javax.swing.JLabel lb_createAccount;
     private javax.swing.JLabel lb_email;
+    private javax.swing.JLabel lb_email1;
     private javax.swing.JLabel lb_fullName;
     private javax.swing.JLabel lb_hidePassword;
     private javax.swing.JLabel lb_password;
     private javax.swing.JLabel lb_showPassword;
     private javax.swing.JLabel logo;
     private javax.swing.JLabel panahKiri;
-    private javax.swing.JTextField tf_email;
     private javax.swing.JTextField tf_nama;
     private javax.swing.JPasswordField tf_password;
+    private javax.swing.JTextField tf_rfid;
+    private javax.swing.JTextField tf_username;
     // End of variables declaration//GEN-END:variables
 
-private void registerUser() {
-        String nama = tf_nama.getText();
-        String username = tf_email.getText();
-        String password = tf_password.getText();
+    private void setAngkaDanHuruf() {
+        KeyAdapter hurufAngkaSaja = new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (!Character.isLetterOrDigit(e.getKeyChar())) {
+                    e.consume();
+                }
+            }
+        };
+
+        tf_nama.addKeyListener(hurufAngkaSaja);
+        tf_username.addKeyListener(hurufAngkaSaja);
+        tf_password.addKeyListener(hurufAngkaSaja);
+        tf_rfid.addKeyListener(hurufAngkaSaja);
+    }
+
+    private void clearForm() {
+        tf_nama.setText("");
+        tf_username.setText("");
+        tf_password.setText("");
+        tf_rfid.setText("");
+    }
+
+    private boolean semuaFieldTerisi() {
+        return !tf_nama.getText().trim().isEmpty()
+            && !tf_username.getText().trim().isEmpty()
+            && !tf_password.getText().trim().isEmpty()
+            && !tf_rfid.getText().trim().isEmpty();
+    }
+
+    private void registerUser() {
+        if (!semuaFieldTerisi()) {
+            JOptionPane.showMessageDialog(this, "Semua field harus diisi!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String nama = tf_nama.getText().trim();
+        String username = tf_username.getText().trim();
+        String password = tf_password.getText().trim();
         String level = "Kasir";
-        
+        String rfid = tf_rfid.getText().trim();
+
         try {
-            String sql = "SELECT * FROM user WHERE username=?";
-            st = conn.prepareStatement(sql);
+            String cekSql = "SELECT * FROM user WHERE username=?";
+            st = conn.prepareStatement(cekSql);
             st.setString(1, username);
             rs = st.executeQuery();
 
@@ -267,47 +318,44 @@ private void registerUser() {
                 JOptionPane.showMessageDialog(this, "Username sudah terdaftar!");
                 return;
             }
-            
-            String queryId = "SELECT id_user FROM user ORDER BY id_user DESC LIMIT 1";
-            st = conn.prepareStatement(queryId);
+
+            String idBaru = "USR01";
+            String ambilIdSql = "SELECT id_user FROM user ORDER BY id_user DESC LIMIT 1";
+            st = conn.prepareStatement(ambilIdSql);
             rs = st.executeQuery();
-        
-            String newId = "USR01"; // ID default jika belum ada data
-        
-            if(rs.next()) {
-                String lastId = rs.getString("id_user");
-                int num = Integer.parseInt(lastId.substring(3)) + 1;
-                newId = String.format("USR%02d", num);
+
+            if (rs.next()) {
+                String idTerakhir = rs.getString("id_user");
+                int nomor = Integer.parseInt(idTerakhir.substring(3)) + 1;
+                idBaru = String.format("USR%02d", nomor);
             }
 
-            String insertSql = "INSERT INTO user (id_user, nama, username, password, level) VALUES (?, ?, ?, ?, 'Kasir')";
-            st = conn.prepareStatement(insertSql);
-            st.setString(1, newId);
+            // Simpan user ke database
+            String simpanSql = "INSERT INTO user (id_user, nama, username, password, level, rfid_user) VALUES (?, ?, ?, ?, ?, ?)";
+            st = conn.prepareStatement(simpanSql);
+            st.setString(1, idBaru);
             st.setString(2, nama);
             st.setString(3, username);
             st.setString(4, password);
-            int rowsAffected = st.executeUpdate();
-            
-            if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(this, "Registrasi Berhasil");
+            st.setString(5, level);
+            st.setString(6, rfid);
+
+            int hasil = st.executeUpdate();
+
+            if (hasil > 0) {
+                JOptionPane.showMessageDialog(this, "Registrasi Berhasil!");
                 clearForm();
                 new FiturLogin().setVisible(true);
                 this.dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Registrasi Gagal");
+                JOptionPane.showMessageDialog(this, "Registrasi Gagal!");
             }
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage());
         }
     }
 
-    private void clearForm() {
-        tf_nama.setText("");
-        tf_email.setText("");
-        tf_email.setText("");
-    }
-    
     private void setBlueSidebarIcons() {
         // Ukuran ikon
         int arrowIconSize = 20;
@@ -329,4 +377,3 @@ private void registerUser() {
         lb_hidePassword.setIcon(hideEyeIcon.derive(eyeIconSize, eyeIconSize));
     }
 }
-

@@ -19,6 +19,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +40,7 @@ public class FiturStokOpname extends javax.swing.JPanel {
         setTabelModel();
         addProdukListener();
         loadData();
+        setNumberinField();
         setPlaceholderField();
         valueComboBox();
         setButtonIcons();
@@ -676,6 +679,19 @@ public class FiturStokOpname extends javax.swing.JPanel {
         return urutan;
     }
     
+    private void setNumberinField() {
+        KeyAdapter angkaSaja = new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (!Character.isDigit(e.getKeyChar())) {
+                    e.consume(); // Abaikan karakter non-angka
+                }
+            }
+        };
+        txt_stokSistem.addKeyListener(angkaSaja);
+        txt_stokFisik.addKeyListener(angkaSaja);
+    }
+    
     private void insertData() {
         String idStokOpname = txt_id.getText();
         Date tanggal = txt_tanggal.getDate();
@@ -809,6 +825,7 @@ public class FiturStokOpname extends javax.swing.JPanel {
 
         txt_id.setEnabled(false);
         txt_tanggal.setEnabled(false);
+        txt_stokSistem.setEnabled(false);
 
         txt_id.setText(tbl_data.getValueAt(row, 0).toString());
 

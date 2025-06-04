@@ -17,6 +17,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -30,6 +32,7 @@ public class FiturProduk extends javax.swing.JPanel {
         setupCustomTableStyle();
         setTabelModel();
         loadData();
+        setNumberinField();
         setPlaceholderField();
         valueComboBox();
         valueComboBoxSatuan();
@@ -695,6 +698,21 @@ public class FiturProduk extends javax.swing.JPanel {
         }
         return urutan;
     }
+    
+    private void setNumberinField() {
+        KeyAdapter angkaSaja = new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (!Character.isDigit(e.getKeyChar())) {
+                    e.consume(); // Abaikan karakter non-angka
+                }
+            }
+        };
+        txt_stok.addKeyListener(angkaSaja);
+        txt_hargaBeli.addKeyListener(angkaSaja);
+        txt_hargaJual.addKeyListener(angkaSaja);
+    }
+
 
     private void insertData() {
         String idProduk = txt_id.getText();

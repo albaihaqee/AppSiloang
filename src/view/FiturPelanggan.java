@@ -16,6 +16,8 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class FiturPelanggan extends javax.swing.JPanel {
@@ -31,6 +33,7 @@ public class FiturPelanggan extends javax.swing.JPanel {
         setupCustomTableStyle();
         setTabelModel();
         loadData();
+        setNumberinField();
         setPlaceholderField();
         setButtonIcons();
         
@@ -670,6 +673,19 @@ public class FiturPelanggan extends javax.swing.JPanel {
             urutan = "PL001";
         }
         return urutan;
+    }
+    
+    private void setNumberinField() {
+        KeyAdapter angkaSaja = new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (!Character.isDigit(e.getKeyChar())) {
+                    e.consume(); // Abaikan karakter non-angka
+                }
+            }
+        };
+        txt_pointMember.addKeyListener(angkaSaja);
+        txt_teleponPelanggan.addKeyListener(angkaSaja);
     }
 
     private boolean cekDuplikatData(String idPelanggan, String namaPelanggan) {
